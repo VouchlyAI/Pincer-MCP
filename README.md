@@ -1,4 +1,11 @@
-![Pincer MCP](mascot.png)
+# Pincer MCP 🦀
+<p align="center">
+    <picture>
+        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/main/mascot.png">
+        <img src="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/main/mascot.png" alt="Pincer-MCP" width="500">
+    </picture>
+</p>
+
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green)](https://modelcontextprotocol.io)
