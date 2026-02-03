@@ -137,3 +137,10 @@ dist
 # Vite logs files
 vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
+
+# Pincer-MCP Vault & Secrets (CRITICAL: Never commit!)
+.pincer/
+*.db
+*.db-shm
+*.db-wal
+audit.jsonl

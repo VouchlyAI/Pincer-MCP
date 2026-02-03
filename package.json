@@ -1,0 +1,63 @@
+{
+  "name": "pincer-mcp",
+  "version": "0.1.0",
+  "description": "The secure grip for your agent's secrets - A security-hardened MCP gateway with proxy token authentication",
+  "type": "module",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "engines": {
+    "node": ">=18.0.0"
+  },
+  "scripts": {
+    "build": "tsc",
+    "dev": "tsx watch src/index.ts",
+    "start": "node dist/index.js",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "vault:init": "tsx src/vault/cli.ts init",
+    "vault:set": "tsx src/vault/cli.ts set",
+    "vault:add-agent": "tsx src/vault/cli.ts add-agent",
+    "vault:authorize": "tsx src/vault/cli.ts authorize",
+    "vault:reset": "tsx src/vault/cli.ts reset",
+    "lint": "eslint src --ext .ts",
+    "format": "prettier --write \"src/**/*.ts\""
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "security",
+    "proxy",
+    "authentication",
+    "secrets-management",
+    "ai-agents"
+  ],
+  "author": "VouchlyAI",
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/VouchlyAI/Pincer-MCP.git"
+  },
+  "bugs": {
+    "url": "https://github.com/VouchlyAI/Pincer-MCP/issues"
+  },
+  "homepage": "https://github.com/VouchlyAI/Pincer-MCP#readme",
+  "dependencies": {
+    "@modelcontextprotocol/sdk": "^1.0.4",
+    "better-sqlite3": "^11.8.1",
+    "keytar": "^7.9.0",
+    "nanoid": "^5.0.9",
+    "zod": "^3.24.1"
+  },
+  "devDependencies": {
+    "@types/better-sqlite3": "^7.6.12",
+    "@types/node": "^22.10.5",
+    "@typescript-eslint/eslint-plugin": "^8.19.1",
+    "@typescript-eslint/parser": "^8.19.1",
+    "@vitest/coverage-v8": "^2.1.8",
+    "eslint": "^9.18.0",
+    "prettier": "^3.4.2",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2",
+    "vitest": "^2.1.8"
+  }
+}
