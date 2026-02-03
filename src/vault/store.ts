@@ -15,7 +15,7 @@ export class VaultStore {
 
     constructor() {
         const vaultPath =
-            process.env["VAULT_DB_PATH"] || join(homedir(), ".pincer", "vault.db");
+            process.env['VAULT_DB_PATH'] || join(homedir(), ".pincer", "vault.db");
 
         // Ensure directory exists
         const dir = dirname(vaultPath);
@@ -25,20 +25,22 @@ export class VaultStore {
 
         this.db = new Database(vaultPath);
 
-        // Initialize schema
+        // Initialize schema with multi-key support
         this.db.exec(`
       CREATE TABLE IF NOT EXISTS secrets (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        tool_name TEXT UNIQUE NOT NULL,
+        tool_name TEXT NOT NULL,
+        key_label TEXT NOT NULL DEFAULT 'default',
         encrypted_value TEXT NOT NULL,
         iv TEXT NOT NULL,
         auth_tag TEXT NOT NULL,
-        created_at TEXT DEFAULT CURRENT_TIMESTAMP
+        created_at TEXT DEFAULT CURRENT_TIMESTAMP,
+        UNIQUE(tool_name, key_label)
       );
       
       CREATE TABLE IF NOT EXISTS proxy_tokens (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
-        agent_id TEXT NOT NULL,
+        agent_id TEXT UNIQUE NOT NULL,
         proxy_token TEXT UNIQUE NOT NULL,
         created_at TEXT DEFAULT CURRENT_TIMESTAMP
       );
@@ -47,11 +49,13 @@ export class VaultStore {
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         agent_id TEXT NOT NULL,
         tool_name TEXT NOT NULL,
+        key_label TEXT NOT NULL DEFAULT 'default',
         UNIQUE(agent_id, tool_name)
       );
       
       CREATE INDEX IF NOT EXISTS idx_proxy_tokens ON proxy_tokens(proxy_token);
       CREATE INDEX IF NOT EXISTS idx_agent_mappings ON agent_mappings(agent_id, tool_name);
+      CREATE INDEX IF NOT EXISTS idx_secrets_tool ON secrets(tool_name, key_label);
     `);
     }
 
@@ -71,7 +75,7 @@ export class VaultStore {
 
         if (!storedKey) {
             throw new Error(
-                "Master key not found in keychain. Run 'npm run vault:init' to initialize."
+                "Master key not found in keychain. Run 'pincer init' to initialize."
             );
         }
 
@@ -159,34 +163,68 @@ export class VaultStore {
     }
 
     /**
-     * Store a real API secret for a specific tool
+     * Store a real API secret for a specific tool with optional label
      */
-    async setSecret(toolName: string, secretValue: string): Promise<void> {
+    async setSecret(
+        toolName: string,
+        secretValue: string,
+        keyLabel: string = "default"
+    ): Promise<void> {
         const { encryptedValue, iv, authTag } = await this.encrypt(secretValue);
 
         const stmt = this.db.prepare(`
-      INSERT OR REPLACE INTO secrets (tool_name, encrypted_value, iv, auth_tag)
-      VALUES (?, ?, ?, ?)
+      INSERT OR REPLACE INTO secrets (tool_name, key_label, encrypted_value, iv, auth_tag)
+      VALUES (?, ?, ?, ?, ?)
     `);
 
-        stmt.run(toolName, encryptedValue, iv, authTag);
+        stmt.run(toolName, keyLabel, encryptedValue, iv, authTag);
     }
 
     /**
-     * Retrieve and decrypt a real API secret (JIT)
+     * Retrieve and decrypt a real API secret (JIT) with optional key label
      */
-    async getSecret(toolName: string): Promise<string> {
+    async getSecret(
+        toolName: string,
+        keyLabel: string = "default"
+    ): Promise<string> {
         const stmt = this.db.prepare(`
-      SELECT encrypted_value, iv, auth_tag FROM secrets WHERE tool_name = ?
+      SELECT encrypted_value, iv, auth_tag FROM secrets 
+      WHERE tool_name = ? AND key_label = ?
     `);
 
-        const row = stmt.get(toolName) as EncryptedData | undefined;
+        const row = stmt.get(toolName, keyLabel) as EncryptedData | undefined;
 
         if (!row) {
-            throw new Error(`Secret not found for tool: ${toolName}`);
+            throw new Error(
+                `Secret not found for tool: ${toolName} (key: ${keyLabel})`
+            );
         }
 
         return await this.decrypt(row);
+    }
+
+    /**
+     * List all secrets grouped by tool
+     */
+    listSecrets(): Array<{ toolName: string; labels: string[] }> {
+        const stmt = this.db.prepare(`
+      SELECT tool_name, key_label FROM secrets ORDER BY tool_name, key_label
+    `);
+
+        const rows = stmt.all() as Array<{ tool_name: string; key_label: string }>;
+        const grouped = new Map<string, string[]>();
+
+        for (const row of rows) {
+            if (!grouped.has(row.tool_name)) {
+                grouped.set(row.tool_name, []);
+            }
+            grouped.get(row.tool_name)!.push(row.key_label);
+        }
+
+        return Array.from(grouped.entries()).map(([toolName, labels]) => ({
+            toolName,
+            labels,
+        }));
     }
 
     /**
@@ -224,15 +262,19 @@ export class VaultStore {
     }
 
     /**
-     * Authorize an agent to use a specific tool
+     * Authorize an agent to use a specific tool with a specific key
      */
-    setAgentMapping(agentId: string, toolName: string): void {
+    setAgentMapping(
+        agentId: string,
+        toolName: string,
+        keyLabel: string = "default"
+    ): void {
         const stmt = this.db.prepare(`
-      INSERT OR IGNORE INTO agent_mappings (agent_id, tool_name)
-      VALUES (?, ?)
+      INSERT OR REPLACE INTO agent_mappings (agent_id, tool_name, key_label)
+      VALUES (?, ?, ?)
     `);
 
-        stmt.run(agentId, toolName);
+        stmt.run(agentId, toolName, keyLabel);
     }
 
     /**
@@ -246,6 +288,60 @@ export class VaultStore {
 
         const result = stmt.get(agentId, toolName) as { count: number };
         return result.count > 0;
+    }
+
+    /**
+     * Get the specific key label assigned to an agent for a tool
+     */
+    getAgentKeyLabel(agentId: string, toolName: string): string {
+        const stmt = this.db.prepare(`
+      SELECT key_label FROM agent_mappings
+      WHERE agent_id = ? AND tool_name = ?
+    `);
+
+        const result = stmt.get(agentId, toolName) as
+            | { key_label: string }
+            | undefined;
+        return result?.key_label || "default";
+    }
+
+    /**
+     * List all agents with their tools and assigned keys
+     */
+    listAgents(): Array<{
+        agentId: string;
+        proxyToken: string;
+        tools: Array<{ toolName: string; keyLabel: string }>;
+    }> {
+        const agentsStmt = this.db.prepare(`
+      SELECT agent_id, proxy_token FROM proxy_tokens ORDER BY agent_id
+    `);
+
+        const agents = agentsStmt.all() as Array<{
+            agent_id: string;
+            proxy_token: string;
+        }>;
+
+        return agents.map((agent) => {
+            const toolsStmt = this.db.prepare(`
+        SELECT tool_name, key_label FROM agent_mappings
+        WHERE agent_id = ? ORDER BY tool_name
+      `);
+
+            const tools = toolsStmt.all(agent.agent_id) as Array<{
+                tool_name: string;
+                key_label: string;
+            }>;
+
+            return {
+                agentId: agent.agent_id,
+                proxyToken: agent.proxy_token,
+                tools: tools.map((t) => ({
+                    toolName: t.tool_name,
+                    keyLabel: t.key_label,
+                })),
+            };
+        });
     }
 
     /**

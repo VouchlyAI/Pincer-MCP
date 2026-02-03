@@ -5,6 +5,9 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
+  "bin": {
+    "pincer": "./dist/cli.js"
+  },
   "engines": {
     "node": ">=18.0.0"
   },
@@ -44,6 +47,7 @@
   "dependencies": {
     "@modelcontextprotocol/sdk": "^1.0.4",
     "better-sqlite3": "^11.8.1",
+    "commander": "^12.1.0",
     "keytar": "^7.9.0",
     "nanoid": "^5.0.9",
     "zod": "^3.24.1"

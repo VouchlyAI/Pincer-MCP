@@ -23,6 +23,17 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Integration tests: MCP server tool listing, authentication flow, validation
   - Unit tests: Gatekeeper proxy token extraction, Validator schema checks
   - Coverage tracking for security-critical components
+- **Executable CLI binary** - Install globally via npm and use `pincer` command
+- **Multi-key support** - Store multiple API keys per tool with labels (e.g., key1, key2, production)
+- **Per-agent key assignment** - Different agents can use different keys for the same tool
+  - Example: `clawdbot` uses `gemini_key#1`, `mybot` uses `gemini_key#2`
+- Enhanced vault commands:
+  - `pincer init` - Initialize vault
+  - `pincer set <tool> <key> --label <name>` - Add labeled keys
+  - `pincer list` - View all stored keys
+  - `pincer agent add <id>` - Register agents
+  - `pincer agent authorize <id> <tool> --key <label>` - Assign specific keys
+  - `pincer agent list` - View all agents and their permissions
 
 ### Fixed
 - Made `arguments` parameter optional in `ToolCallRequest` interface for better type safety

@@ -46,29 +46,64 @@ sequenceDiagram
 
 ### Installation
 
+**Option 1: Global Installation (Recommended)**
 ```bash
-cd pincer-mcp
-npm install
+npm install -g pincer-mcp
+# Now 'pincer' command is available system-wide
 ```
 
-### Initialize Vault
+**Option 2: Local Development**
+```bash
+git clone https://github.com/VouchlyAI/Pincer-MCP.git
+cd Pincer-MCP
+npm install
+npm run build
+npm link  # Makes 'pincer' command available locally
+```
+
+### Setup Vault
 
 ```bash
-# 1. Create master key in OS keychain
-npm run vault:init
+# 1. Initialize vault (creates master key in OS keychain)
+pincer init
 
 # 2. Store your real API keys (encrypted)
-npm run vault:set gemini_api_key "AIzaSyDpxPq..."
-npm run vault:set slack_token "xoxb-12345..."
+pincer set gemini_api_key "AIzaSyDpxPq..."
+pincer set slack_token "xoxb-12345..."
 
 # 3. Register an agent and generate proxy token
-npm run vault:add-agent openclaw
+pincer agent add openclaw
 # Output: 🎫 Proxy Token: pxr_V1StGXR8_Z5jdHi6B-myT
 
 # 4. Authorize the agent for specific tools
-npm run vault:authorize openclaw gemini_generate
-npm run vault:authorize openclaw slack_send_message
+pincer agent authorize openclaw gemini_generate
+pincer agent authorize openclaw slack_send_message
 ```
+
+### Multi-Key Support
+
+Store multiple keys for the same tool and assign them to different agents:
+
+```bash
+# Store two different Gemini API keys
+pincer set gemini_api_key "AIzaSy_KEY_FOR_CLAWDBOT..." --label key1
+pincer set gemini_api_key "AIzaSy_KEY_FOR_MYBOT..." --label key2
+
+# View all stored keys
+pincer list
+
+# Assign specific keys to each agent
+pincer agent add clawdbot
+pincer agent authorize clawdbot gemini_generate --key key1
+
+pincer agent add mybot  
+pincer agent authorize mybot gemini_generate --key key2
+
+# View agent permissions
+pincer agent list
+```
+
+**Result:** `clawdbot` uses key1, `mybot` uses key2 - perfect for rate limiting or cost tracking!
 
 ### Run the Server
 

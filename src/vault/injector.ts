@@ -13,8 +13,11 @@ export class VaultInjector {
         // Map tool name to vault secret key
         const secretKey = this.getSecretKeyForTool(toolName);
 
-        // JIT decrypt real API key from vault
-        const realApiKey = await this.vault.getSecret(secretKey);
+        // Get the specific key label for this agent
+        const keyLabel = this.vault.getAgentKeyLabel(agentId, toolName);
+
+        // JIT decrypt real API key from vault (agent-specific key)
+        const realApiKey = await this.vault.getSecret(secretKey, keyLabel);
 
         // Clone request and inject real credentials
         const enriched = {
