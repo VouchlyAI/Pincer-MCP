@@ -1,8 +1,8 @@
 # Pincer MCP 🦀
 <p align="center">
     <picture>
-        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/main/mascot.png">
-        <img src="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/main/mascot.png" alt="Pincer-MCP" width="500">
+        <source media="(prefers-color-scheme: light)" srcset="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/refs/heads/main/mascot.png">
+        <img src="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/refs/heads/main/mascot.png" alt="Pincer-MCP" width="500">
     </picture>
 </p>
 
