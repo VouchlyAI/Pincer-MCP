@@ -19,7 +19,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Abstract BaseCaller with retry logic and exponential backoff
 - Gemini API caller implementation
 - Zod schema validation for tool arguments
-- Comprehensive security test suite
+- Comprehensive test suite with Vitest (12/12 passing)
+  - Integration tests: MCP server tool listing, authentication flow, validation
+  - Unit tests: Gatekeeper proxy token extraction, Validator schema checks
+  - Coverage tracking for security-critical components
 
 ### Fixed
 - Made `arguments` parameter optional in `ToolCallRequest` interface for better type safety
