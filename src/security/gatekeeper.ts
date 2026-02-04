@@ -9,7 +9,7 @@ export class Gatekeeper {
 
         if (!proxyToken) {
             throw new Error(
-                "Missing proxy token. Include it in '_meta.pincer_token' or '__pincer_auth__'"
+                "Missing proxy token. Include it in '_meta.pincer_token', '__pincer_auth__', or set PINCER_PROXY_TOKEN env variable"
             );
         }
 
@@ -39,7 +39,8 @@ export class Gatekeeper {
     }
 
     /**
-     * Extract proxy token from request body (2 fallback locations)
+     * Extract proxy token from request body or environment variable
+     * Priority: 1) _meta.pincer_token, 2) __pincer_auth__, 3) PINCER_PROXY_TOKEN env
      */
     private extractProxyToken(request: ToolCallRequest): string | null {
         // Preferred: _meta.pincer_token (JSON-RPC 2.0 metadata convention)
@@ -50,7 +51,7 @@ export class Gatekeeper {
             }
         }
 
-        // Fallback: __pincer_auth__ in tool arguments
+        // Fallback 1: __pincer_auth__ in tool arguments
         const args = request.params.arguments || {};
         if (typeof args === "object" && "__pincer_auth__" in args) {
             const token = args["__pincer_auth__"] as string;
@@ -59,6 +60,12 @@ export class Gatekeeper {
             delete args["__pincer_auth__"];
 
             return token;
+        }
+
+        // Fallback 2: Environment variable (useful for MCP clients)
+        const envToken = process.env["PINCER_PROXY_TOKEN"];
+        if (envToken && typeof envToken === "string") {
+            return envToken;
         }
 
         return null;
