@@ -55,6 +55,8 @@ export class VaultInjector {
         // Map external tool names to internal vault keys
         const mapping: Record<string, string> = {
             gemini_generate: "gemini_api_key",
+            openwebui_chat: "openwebui_api_key",
+            openwebui_list_models: "openwebui_api_key",
             slack_send_message: "slack_token",
             gcloud_create_vm: "gcloud_credentials",
         };

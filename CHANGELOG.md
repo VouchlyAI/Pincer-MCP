@@ -46,8 +46,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pincer reset` - Delete master key only
 - **Environment variable proxy token fallback**: Gatekeeper now checks `PINCER_PROXY_TOKEN` environment variable if token is not in request, making MCP client integration simpler
 - **Tool-to-Secret mapping documentation**: Added clear tables in README, SETUP.md, and IDE_INTEGRATION.md showing which secret name to use for each tool (e.g., `gemini_generate` → `gemini_api_key`)
-
-- **Tool-to-Secret mapping documentation**: Added clear tables in README, SETUP.md, and IDE_INTEGRATION.md showing which secret name to use for each tool (e.g., `gemini_generate` → `gemini_api_key`)
+- **OpenWebUI caller** - Self-hosted LLM support:
+  - `openwebui_chat` - OpenAI-compatible chat completions with any OpenWebUI instance
+  - `openwebui_list_models` - Fetch available models from OpenWebUI
+  - Configurable URL via parameter or `OPENWEBUI_URL` env var
+  - Default: `https://openwebui.com` (supports self-hosted instances)
+  - Ideal for AI engineers testing local/self hosted LLMs (Llama, Mistral, Granite, etc.)
 
 ### Changed
 - **Proxy token authentication** now supports 3 sources (priority order):

@@ -133,6 +133,8 @@ export PINCER_PROXY_TOKEN="pxr_V1StGXR8_Z5jdHi6B-myT"
 | Tool Name (for authorize) | Secret Name (for set) | Example Command |
 |---------------------------|----------------------|-----------------|
 | `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
+| `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
+| `openwebui_list_models` | `openwebui_api_key` | (same as above) |
 | `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
 | `gcloud_create_vm` | `gcloud_credentials` | `pincer set gcloud_credentials {...}` |
 

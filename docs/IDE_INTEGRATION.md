@@ -641,6 +641,93 @@ Each team member gets their own proxy token to use in their IDE.
 
 ---
 
+## Example: Self-Hosted LLMs with OpenWebUI
+
+**Use Case:** AI engineers running self-hosted LLMs (Llama, Mistral, Granite, etc.) via OpenWebUI who want to test different models through their IDE without exposing API keys.
+
+### Setup
+
+1. **Install OpenWebUI** (if self-hosting):
+   ```bash
+   docker run -d -p 3000:8080 --name openwebui ghcr.io/open-webui/open-webui:main
+   ```
+
+2. **Get OpenWebUI API Key**:
+   - Open OpenWebUI at `http://localhost:3000`
+   - Go to Settings → Account
+   - Generate API Key
+   - Copy the key (starts with `sk-`)
+
+3. **Configure Pincer**:
+   ```bash
+   # Initialize vault
+   pincer init
+
+   # Store OpenWebUI API key
+   pincer set openwebui_api_key "sk-your-api-key-here"
+
+   # Register your IDE as an agent
+   pincer agent add vscode
+   # Output: pxr_abc123...
+
+   # Authorize both OpenWebUI tools
+   pincer agent authorize vscode openwebui_chat
+   pincer agent authorize vscode openwebui_list_models
+   ```
+
+4. **Configure IDE** (VSCode example):
+
+   Add to `settings.json`:
+   ```json
+   {
+     "mcp.servers": {
+       "pincer": {
+         "type": "stdio",
+         "command": "node",
+         "args": ["/path/to/pincer-mcp/dist/index.js"],
+         "env": {
+           "PINCER_PROXY_TOKEN": "pxr_abc123...",
+           "OPENWEBUI_URL": "http://localhost:3000"
+         }
+       }
+     }
+   }
+   ```
+
+### Usage
+
+**List available models:**
+```
+AI: What models are available?
+→ Uses openwebui_list_models
+→ Returns: llama3, mistral-7b, granite3.1-dense:8b, etc.
+```
+
+**Chat with a model:**
+```
+AI: Use llama3 to explain quantum computing
+→ Uses openwebui_chat with llama3
+→ Pincer injects your API key securely
+→ Returns response from self-hosted model
+```
+
+**Test different models:**
+```
+AI: Compare responses from llama3 vs mistral on this code snippet
+→ Makes multiple chat requests with different models
+→ No API key exposure to IDE
+```
+
+### Benefits for AI Engineers
+
+- **Secure testing**: Test local LLMs without hardcoding API keys
+- **Multi-model comparison**: Easily switch between models
+- **Audit trail**: Track which models were used and when
+- **Team collaboration**: Share OpenWebUI instance, separate access tokens
+- **Flexibility**: Same setup works for hosted openwebui.com or self-hosted
+
+---
+
 ## Next Steps
 
 - **[SETUP.md](SETUP.md)** - General Pincer setup guide
