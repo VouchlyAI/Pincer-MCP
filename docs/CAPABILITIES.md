@@ -170,7 +170,6 @@ Agent ID → [Tool Name + Key Label]
 ```
 clawdbot:
   - gemini_generate (key: production)
-  - slack_send_message (key: default)
 
 mybot:
   - gemini_generate (key: dev)
@@ -227,23 +226,6 @@ const apiKey = await vault.getSecret(toolName, keyLabel);
 }
 ```
 
-**Slack Send Message:**
-```typescript
-{
-  channel: z.string().min(1),
-  message: z.string().min(1)
-}
-```
-
-**Google Cloud Create VM:**
-```typescript
-{
-  project: z.string(),
-  zone: z.string(),
-  machine_type: z.string(),
-  name: z.string()
-}
-```
 
 **Validation Flow:**
 ```typescript
@@ -385,53 +367,6 @@ Entry 3: hash(entry3 + hash2)
 
 ---
 
-### 2. Slack Send Message
-
-**Tool Name:** `slack_send_message`
-
-**Description:** Send a message to a Slack channel
-
-**Arguments:**
-```typescript
-{
-  channel: string,    // Required: Channel ID or name
-  message: string     // Required: Message text
-}
-```
-
-**Example:**
-```json
-{
-  "name": "slack_send_message",
-  "arguments": {
-    "channel": "#general",
-    "message": "Deployment complete!"
-  },
-  "_meta": {
-    "pincer_token": "pxr_xyz789..."
-  }
-}
-```
-
----
-
-### 3. Google Cloud Create VM
-
-**Tool Name:** `gcloud_create_vm`
-
-**Description:** Create a Google Cloud VM instance
-
-**Arguments:**
-```typescript
-{
-  project: string,       // Required: GCP project ID
-  zone: string,          // Required: Zone (e.g., us-central1-a)
-  machine_type: string,  // Required: e.g., n1-standard-1
-  name: string           // Required: VM name
-}
-```
-
----
 
 ## CLI Capabilities
 
@@ -523,6 +458,7 @@ pincer agent list                        # View permissions
 ## Learn More
 
 - [Architecture Overview](../README.md#architecture)
+- [Tool Mappings](./TOOL_MAPPINGS.md)
 - [Security Features](../README.md#security-features)
 - [Testing Guide](./TESTING.md)
 - [Contributing Guidelines](../CONTRIBUTING.md)

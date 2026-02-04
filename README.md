@@ -15,8 +15,6 @@ Pincer-MCP is a security-hardened Model Context Protocol (MCP) gateway that elim
 ## 🔒 The Problem
 
 Current AI agents store long-lived API keys in plain-text `.env` files or local databases. If compromised via prompt injection or host intrusion, attackers gain direct access to your:
-- Google Cloud credentials
-- Slack bot tokens
 - Database passwords
 - Third-party API keys
 
@@ -55,8 +53,6 @@ sequenceDiagram
 - `openrouter_list_models`: List all available models across OpenRouter providers.
 - `openwebui_chat`: OpenAI-compatible interface for self-hosted LLMs.
 - `openwebui_list_models`: Discover available models on an OpenWebUI instance.
-- `slack_send_message`: Secure Slack message posting.
-- `gcloud_create_vm`: Enterprise-grade Google Cloud resource management.
 
 *(More callers coming soon!)*
 
@@ -93,7 +89,6 @@ pincer init
 # 2. Store your real API keys (encrypted)
 pincer set gemini_api_key "AIzaSyDpxPq..."
 pincer set openai_api_key "sk-proj-..."
-pincer set slack_token "xoxb-12345..."
 
 # 3. Register an agent and generate proxy token
 pincer agent add openclaw
@@ -101,7 +96,6 @@ pincer agent add openclaw
 
 # 4. Authorize the agent for specific tools
 pincer agent authorize openclaw gemini_generate
-pincer agent authorize openclaw slack_send_message
 ```
 
 ### Multi-Key Support
@@ -145,22 +139,7 @@ export PINCER_PROXY_TOKEN="pxr_V1StGXR8_Z5jdHi6B-myT"
 
 ## Tool-to-Secret Name Mappings
 
-**Important:** When using `pincer set`, you must use the correct secret name for each tool:
-
-| Tool Name (for authorize) | Secret Name (for set) | Example Command |
-|---------------------------|----------------------|-----------------|
-| `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
-| `openai_chat` | `openai_api_key` | `pincer set openai_api_key sk-proj...` |
-| `openai_list_models` | `openai_api_key` | (same as above) |
-| `openai_compatible_chat` | `openai_compatible_api_key` | `pincer set openai_compatible_api_key YOUR_KEY` |
-| `openai_compatible_list_models` | `openai_compatible_api_key` | (same as above) |
-| `claude_chat` | `claude_api_key` | `pincer set claude_api_key sk-ant-api03...` |
-| `openrouter_chat` | `openrouter_api_key` | `pincer set openrouter_api_key sk-or-v1...` |
-| `openrouter_list_models` | `openrouter_api_key` | (same as above) |
-| `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
-| `openwebui_list_models` | `openwebui_api_key` | (same as above) |
-| `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
-| `gcloud_create_vm` | `gcloud_credentials` | `pincer set gcloud_credentials {...}` |
+When storing secrets, you must use the correct secret name for each tool. See the **[Tool Mappings Guide](docs/TOOL_MAPPINGS.md)** for a complete reference.
 
 When you run `pincer agent authorize myagent gemini_generate`, Pincer will inject the `gemini_api_key` secret when that tool is called.
 

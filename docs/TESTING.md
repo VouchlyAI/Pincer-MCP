@@ -20,7 +20,7 @@ This document provides a comprehensive overview of the Pincer-MCP test suite, in
 1. **Tool Listing**
    - Verifies server exposes correct tool schemas
    - Validates tool names and argument schemas
-   - Tests: `gemini_generate`, `slack_send_message`, `gcloud_create_vm`
+   - Tests: `gemini_generate`, `openai_chat`, `claude_chat`
 
 2. **Authentication Rejection**
    - Ensures unauthenticated requests are blocked
@@ -80,10 +80,6 @@ This document provides a comprehensive overview of the Pincer-MCP test suite, in
    - Validates required fields: `prompt`, `model`
    - Tests optional field: `temperature`
 
-2. **Slack Tool Validation**
-   - Tests Zod schema for `slack_send_message`
-   - Validates required fields: `channel`, `message`
-   - Ensures type safety
 
 3. **Unknown Tool Rejection**
    - Tests error for unregistered tools
@@ -252,13 +248,6 @@ invalid_token               (invalid format)
 }
 ```
 
-**Slack:**
-```json
-{
-  "channel": "#general",
-  "message": "Test message"
-}
-```
 
 ## Continuous Integration
 

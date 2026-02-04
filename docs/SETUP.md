@@ -84,33 +84,11 @@ pincer set openrouter_api_key "sk-or-v1-YOUR_OPENROUTER_KEY"
 # Store OpenWebUI API key
 pincer set openwebui_api_key "sk-YOUR_OPENWEBUI_KEY"
 
-# Store Slack token
-pincer set slack_token "xoxb-12345-YOUR_SLACK_TOKEN"
-
-# Store Google Cloud credentials (if needed)
-pincer set gcloud_credentials '{"type":"service_account","project_id":"..."}'
 ```
 
 **Tool-to-Secret Name Mappings:**
 
-When storing secrets, use the correct secret name for each tool:
-
-| Tool Name | Secret Name | Example |
-|-----------|-------------|---------|
-| `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
-| `openai_chat` | `openai_api_key` | `pincer set openai_api_key sk-proj...` |
-| `openai_list_models` | `openai_api_key` | (same as above) |
-| `openai_compatible_chat` | `openai_compatible_api_key` | `pincer set openai_compatible_api_key YOUR_KEY` |
-| `openai_compatible_list_models` | `openai_compatible_api_key` | (same as above) |
-| `claude_chat` | `claude_api_key` | `pincer set claude_api_key sk-ant-api03...` |
-| `openrouter_chat` | `openrouter_api_key` | `pincer set openrouter_api_key sk-or-v1...` |
-| `openrouter_list_models` | `openrouter_api_key` | (same as above) |
-| `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
-| `openwebui_list_models` | `openwebui_api_key` | (same as above) |
-| `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
-| `gcloud_create_vm` | `gcloud_credentials` | `pincer set gcloud_credentials {...}` |
-
-> **Why different names?** Tool names (e.g., `gemini_generate`) are what you authorize agents to use. Secret names (e.g., `gemini_api_key`) are what you store in the vault. This allows one secret to power multiple tools or future tool additions.
+When storing secrets, you must use the correct secret name for each tool. See the **[Tool Mappings Guide](TOOL_MAPPINGS.md)** for a complete reference.
 
 **With labels (multi-key support):**
 ```bash
@@ -145,8 +123,6 @@ Grant the agent permission to use specific tools:
 # Allow agent to use Gemini
 pincer agent authorize myagent gemini_generate
 
-# Allow agent to use Slack
-pincer agent authorize myagent slack_send_message
 ```
 
 **With specific key labels:**
@@ -222,7 +198,6 @@ pincer agent list
     Token: pxr_V1StGXR8_Z5jdHi6B-myT
     Tools:
       - gemini_generate (key: default)
-      - slack_send_message (key: default)
 ```
 
 ## Running the MCP Server

@@ -419,25 +419,6 @@ export class CallerRegistry {
                     required: [],
                 },
             },
-            // Placeholder for future tools
-            {
-                name: "slack_send_message",
-                description: "Send a message to a Slack channel (coming soon)",
-                inputSchema: {
-                    type: "object",
-                    properties: {
-                        channel: {
-                            type: "string",
-                            description: "Slack channel ID (e.g., C1234567890)",
-                        },
-                        text: {
-                            type: "string",
-                            description: "Message text to send",
-                        },
-                    },
-                    required: ["channel", "text"],
-                },
-            },
         ];
     }
 }

@@ -64,8 +64,6 @@ export class VaultInjector {
             claude_chat: "claude_api_key",
             openrouter_chat: "openrouter_api_key",
             openrouter_list_models: "openrouter_api_key",
-            slack_send_message: "slack_token",
-            gcloud_create_vm: "gcloud_credentials",
         };
 
         return mapping[toolName] || toolName;

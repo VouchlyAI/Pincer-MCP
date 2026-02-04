@@ -16,15 +16,6 @@ export class Validator {
             })
         );
 
-        this.schemas.set(
-            "slack_send_message",
-            z.object({
-                channel: z.string().regex(/^[C|D][A-Z0-9]{8,}$/),
-                text: z.string().min(1).max(4000),
-                __pincer_auth__: z.string().optional(),
-            })
-        );
-
         // OpenWebUI Schemas
         this.schemas.set(
             "openwebui_chat",

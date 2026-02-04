@@ -14,8 +14,7 @@ This guide explains how to configure OpenClaw to use Pincer-MCP as its external 
 graph LR
     A[OpenClaw Agent] -->|Proxy Token| B[Pincer-MCP Server]
     B -->|Real API Key| C[Gemini API]
-    B -->|Real API Key| D[Slack API]
-    B -->|Real API Key| E[GCloud API]
+    B -->|Real API Key| D[OpenAI API]
     
     B -.->|JIT Decrypt| F[OS Keychain]
     B -.->|Store Tokens| G[SQLite Vault]
@@ -57,8 +56,6 @@ pincer init
 
 # Store your real API keys
 pincer set gemini_api_key "AIzaSyDpxPq_YOUR_REAL_GEMINI_KEY"
-pincer set slack_token "xoxb-YOUR_REAL_SLACK_TOKEN"
-pincer set gcloud_credentials '{"type":"service_account",...}'
 ```
 
 ## Step 3: Register OpenClaw Agent
@@ -85,12 +82,6 @@ Grant OpenClaw permission to use specific tools:
 ```bash
 # Allow Gemini API calls
 pincer agent authorize openclaw gemini_generate
-
-# Allow Slack messaging
-pincer agent authorize openclaw slack_send_message
-
-# Allow Google Cloud operations
-pincer agent authorize openclaw gcloud_create_vm
 ```
 
 ## Step 5: Configure OpenClaw MCP Settings
@@ -196,10 +187,8 @@ Tell OpenClaw to prefer Pincer tools over built-in ones. In your agent configura
 Use these Pincer-provided tools for API calls:
 
 - `pincer/gemini_generate` - Generate text using Gemini (secretless)
-- `pincer/slack_send_message` - Send Slack messages (secretless)
-- `pincer/gcloud_create_vm` - Create Google Cloud VMs (secretless)
 
-**Do NOT use:** Built-in `gemini.*`, `slack.*`, or `gcloud.*` tools, as they require direct API keys.
+**Do NOT use:** Built-in `gemini.*` tools, as they require direct API keys.
 ```
 
 ## Step 8: Test the Integration
@@ -269,8 +258,6 @@ Pincer tools are prefixed with the server name in OpenClaw:
 | Pincer Tool | OpenClaw Reference | Built-in Alternative |
 |-------------|-------------------|---------------------|
 | `gemini_generate` | `pincer/gemini_generate` | `gemini.generate` |
-| `slack_send_message` | `pincer/slack_send_message` | `slack.send` |
-| `gcloud_create_vm` | `pincer/gcloud_create_vm` | `gcloud.compute.create` |
 
 **Agent should use:** `pincer/*` versions
 **Agent should avoid:** Built-in versions (require direct API keys)
@@ -429,14 +416,10 @@ Complete example `opencode.json`:
       },
       "tools": {
         "allowed": [
-          "pincer/gemini_generate",
-          "pincer/slack_send_message",
-          "pincer/gcloud_create_vm"
+          "pincer/gemini_generate"
         ],
         "blocked": [
-          "gemini.*",
-          "slack.*",
-          "gcloud.*"
+          "gemini.*"
         ]
       }
     }
@@ -447,6 +430,7 @@ Complete example `opencode.json`:
 ## Next Steps
 
 - Read [CAPABILITIES.md](CAPABILITIES.md) for full Pincer API reference
+- See [TOOL_MAPPINGS.md](TOOL_MAPPINGS.md) for secret name mappings
 - Check [TESTING.md](TESTING.md) for running integration tests
 - Review [SETUP.md](SETUP.md) for general Pincer setup
 - Monitor `~/.pincer/audit.jsonl` for security events

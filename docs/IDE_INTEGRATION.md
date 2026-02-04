@@ -121,8 +121,6 @@ Once configured, Pincer tools appear in the MCP tool palette:
 2. Use AI assistant (Copilot, Cody, Continue, etc.)
 3. Available tools:
    - `pincer/gemini_generate` - Text generation
-   - `pincer/slack_send_message` - Slack integration
-   - `pincer/gcloud_create_vm` - Cloud operations
 
 **Example prompt:**
 ```
@@ -302,7 +300,6 @@ pincer init
 
 # 3. Store API keys
 pincer set gemini_api_key "AIzaSy..."
-pincer set slack_token "xoxb-..."
 
 # 4. List keys to verify
 pincer list
@@ -310,13 +307,7 @@ pincer list
 
 **Tool-to-Secret Name Mappings:**
 
-| Tool Name | Secret Name to Store |
-|-----------|---------------------|
-| `gemini_generate` | `gemini_api_key` |
-| `slack_send_message` | `slack_token` |
-| `gcloud_create_vm` | `gcloud_credentials` |
-
-> **Important:** Use the secret name (right column) with `pincer set`, and the tool name (left column) with `pincer agent authorize`.
+When storing secrets, you must use the correct secret name for each tool. See the **[Tool Mappings Guide](TOOL_MAPPINGS.md)** for a complete reference.
 
 ### Per-IDE Agent Setup
 
@@ -364,7 +355,6 @@ pincer agent list
     Token: pxr_claude_token_456
     Tools:
       - gemini_generate (key: default)
-      - slack_send_message (key: default)
 
   cursor:
     Token: pxr_cursor_token_789
@@ -634,7 +624,7 @@ pincer agent add charlie-claude
 # Authorize individually
 pincer agent authorize alice-vscode gemini_generate
 pincer agent authorize bob-cursor gemini_generate
-pincer agent authorize charlie-claude gemini_generate slack_send_message
+pincer agent authorize charlie-claude gemini_generate
 ```
 
 Each team member gets their own proxy token to use in their IDE.
