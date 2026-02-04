@@ -67,6 +67,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Perfect for Azure OpenAI, local Ollama, vLLM servers, or other providers
   - Reuses standard OpenAI message format and parameters
   - Secure API key management through vault (`openai_compatible_api_key`)
+- **Claude (Anthropic) caller** - Claude 3/3.5 model support:
+  - `claude_chat` - Chat completions with Claude models (Sonnet, Opus, Haiku)
+  - Messages API with separate system prompt parameter
+  - Required max_tokens parameter (Anthropic requirement)
+  - Support for Claude 3.5 Sonnet, Claude 3 Opus, and Haiku models
+  - Temperature, top_p, and top_k controls
+  - Secure API key management through vault (`claude_api_key`)
 
 ### Changed
 - **Proxy token authentication** now supports 3 sources (priority order):

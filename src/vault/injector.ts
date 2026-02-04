@@ -61,6 +61,7 @@ export class VaultInjector {
             openai_list_models: "openai_api_key",
             openai_compatible_chat: "openai_compatible_api_key",
             openai_compatible_list_models: "openai_compatible_api_key",
+            claude_chat: "claude_api_key",
             slack_send_message: "slack_token",
             gcloud_create_vm: "gcloud_credentials",
         };

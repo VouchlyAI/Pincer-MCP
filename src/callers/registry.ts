@@ -3,6 +3,7 @@ import { GeminiCaller } from "./gemini.js";
 import { OpenWebUICaller } from "./openwebui.js";
 import { OpenAICaller } from "./openai.js";
 import { OpenAICompatibleCaller } from "./openai-compatible.js";
+import { ClaudeCaller } from "./claude.js";
 
 export class CallerRegistry {
     private callers = new Map<string, BaseCaller>();
@@ -16,6 +17,7 @@ export class CallerRegistry {
         this.callers.set("openai_list_models", new OpenAICaller());
         this.callers.set("openai_compatible_chat", new OpenAICompatibleCaller());
         this.callers.set("openai_compatible_list_models", new OpenAICompatibleCaller());
+        this.callers.set("claude_chat", new ClaudeCaller());
         // Add more callers here as they're implemented
     }
 
@@ -287,6 +289,68 @@ export class CallerRegistry {
                         },
                     },
                     required: [],
+                },
+            },
+            // Claude (Anthropic) tools
+            {
+                name: "claude_chat",
+                description:
+                    "Chat completions using Anthropic's Claude models. Supports Claude 3.5 Sonnet, Claude 3 Opus, Haiku, and more. Uses Messages API with separate system parameter.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        model: {
+                            type: "string",
+                            description: "Model identifier (e.g., 'claude-3-5-sonnet-20241022', 'claude-3-opus-20240229', 'claude-3-haiku-20240307')",
+                        },
+                        messages: {
+                            type: "array",
+                            description: "Array of message objects with 'role' (user/assistant only) and 'content'. System prompts go in separate 'system' parameter.",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    role: {
+                                        type: "string",
+                                        enum: ["user", "assistant"],
+                                        description: "Message role (only user/assistant, no system)",
+                                    },
+                                    content: {
+                                        type: "string",
+                                        description: "Message content",
+                                    },
+                                },
+                                required: ["role", "content"],
+                            },
+                        },
+                        system: {
+                            type: "string",
+                            description: "Optional system prompt (separate from messages)",
+                        },
+                        max_tokens: {
+                            type: "number",
+                            description: "Maximum tokens in response (REQUIRED by Anthropic)",
+                        },
+                        temperature: {
+                            type: "number",
+                            description:
+                                "Controls randomness (0.0 = deterministic, 1.0 = very random)",
+                            minimum: 0,
+                            maximum: 1,
+                            default: 1.0,
+                        },
+                        top_p: {
+                            type: "number",
+                            description: "Nucleus sampling threshold",
+                            minimum: 0,
+                            maximum: 1,
+                        },
+                        top_k: {
+                            type: "number",
+                            description: "Top-k sampling parameter",
+                            minimum: 1,
+                        },
+                    },
+                    required: ["model", "messages", "max_tokens"],
                 },
             },
             // Placeholder for future tools

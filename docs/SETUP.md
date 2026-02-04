@@ -75,6 +75,9 @@ pincer set openai_api_key "sk-proj-YOUR_OPENAI_KEY_HERE"
 # Store OpenAI-compatible API key (for Azure, Ollama, etc.)
 pincer set openai_compatible_api_key "YOUR_AZURE_OR_CUSTOM_KEY"
 
+# Store Claude API key
+pincer set claude_api_key "sk-ant-api03-YOUR_CLAUDE_KEY"
+
 # Store OpenWebUI API key
 pincer set openwebui_api_key "sk-YOUR_OPENWEBUI_KEY"
 
@@ -96,6 +99,7 @@ When storing secrets, use the correct secret name for each tool:
 | `openai_list_models` | `openai_api_key` | (same as above) |
 | `openai_compatible_chat` | `openai_compatible_api_key` | `pincer set openai_compatible_api_key YOUR_KEY` |
 | `openai_compatible_list_models` | `openai_compatible_api_key` | (same as above) |
+| `claude_chat` | `claude_api_key` | `pincer set claude_api_key sk-ant-api03...` |
 | `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
 | `openwebui_list_models` | `openwebui_api_key` | (same as above) |
 | `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
