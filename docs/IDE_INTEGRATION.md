@@ -61,7 +61,35 @@ Add to your workspace or user `settings.json`:
 }
 ```
 
-**Note:** The `env` section is optional. Pincer uses these defaults:
+**Proxy Token Configuration:**
+
+Pincer accepts the proxy token in **three ways** (priority order):
+
+1. **Environment variable** (recommended for MCP clients):
+   ```json
+   "env": {
+     "PINCER_PROXY_TOKEN": "pxr_YOUR_TOKEN"
+   }
+   ```
+   
+2. **Request metadata** (if your MCP client supports custom metadata):
+   ```json
+   "_meta": {
+     "pincer_token": "pxr_YOUR_TOKEN"
+   }
+   ```
+
+3. **Tool arguments** (fallback):
+   ```json
+   "arguments": {
+     "__pincer_auth__": "pxr_YOUR_TOKEN",
+     "prompt": "..."
+   }
+   ```
+
+> **Recommended:** Use the environment variable approach in your MCP config. Pincer will automatically use it for all tool calls, avoiding the need to inject the token into each request.
+
+**Note:** The `env` section is optional for vault paths. Pincer uses these defaults:
 - Vault: `~/.pincer/vault.db` 
 - Audit log: `~/.pincer/audit.jsonl`
 

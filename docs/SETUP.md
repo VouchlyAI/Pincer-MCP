@@ -131,7 +131,58 @@ pincer agent authorize myagent slack_send_message
 pincer agent authorize myagent gemini_generate --key production
 ```
 
-### Step 5: Verify Setup
+### Step 5: Configure Agent with Proxy Token
+
+Give the agent its proxy token. Pincer supports **three authentication methods**:
+
+#### Method 1: Environment Variable (Recommended)
+
+Set the token as an environment variable:
+
+```bash
+export PINCER_PROXY_TOKEN="pxr_V1StGXR8_Z5jdHi6B-myT"
+```
+
+**For MCP clients** (VSCode, Claude Desktop, etc.), add to config:
+
+```json
+{
+  "env": {
+    "PINCER_PROXY_TOKEN": "pxr_V1StGXR8_Z5jdHi6B-myT"
+  }
+}
+```
+
+Pincer automatically reads this and authenticates all tool calls.
+
+#### Method 2: Request Metadata
+
+If your client supports custom metadata:
+
+```json
+{
+  "_meta": {
+    "pincer_token": "pxr_V1StGXR8_Z5jdHi6B-myT"
+  }
+}
+```
+
+#### Method 3: Tool Arguments (Fallback)
+
+As a last resort, include in each tool call:
+
+```json
+{
+  "arguments": {
+    "__pincer_auth__": "pxr_V1StGXR8_Z5jdHi6B-myT",
+    "prompt": "..."
+  }
+}
+```
+
+> **Priority:** Pincer checks (1) request metadata, (2) tool arguments, then (3) environment variable.
+
+### Step 6: Verify Setup
 
 List all registered agents and their permissions:
 

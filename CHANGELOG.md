@@ -38,6 +38,23 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pincer agent add <id>` - Register agents
   - `pincer agent authorize <id> <tool> --key <label>` - Assign specific keys
   - `pincer agent list` - View all agents and their permissions
+  - `pincer agent revoke <id> <tool>` - Revoke specific tool access
+  - `pincer agent remove <id>` - Remove agent entirely
+- **Vault cleanup commands**:
+  - `pincer clear [--yes]` - Delete all secrets/agents (keeps master key)
+  - `pincer nuke [--yes]` - Complete vault destruction (master key + database)
+  - `pincer reset` - Delete master key only
+- **Environment variable proxy token fallback**: Gatekeeper now checks `PINCER_PROXY_TOKEN` environment variable if token is not in request, making MCP client integration simpler
+- **Tool-to-Secret mapping documentation**: Added clear tables in README, SETUP.md, and IDE_INTEGRATION.md showing which secret name to use for each tool (e.g., `gemini_generate` → `gemini_api_key`)
+
+- **Tool-to-Secret mapping documentation**: Added clear tables in README, SETUP.md, and IDE_INTEGRATION.md showing which secret name to use for each tool (e.g., `gemini_generate` → `gemini_api_key`)
+
+### Changed
+- **Proxy token authentication** now supports 3 sources (priority order):
+  1. Request metadata (`_meta.pincer_token`)
+  2. Tool arguments (`__pincer_auth__`)
+  3. Environment variable (`PINCER_PROXY_TOKEN`) ← NEW
+- Error messages now mention all available token authentication methods
 
 ### Fixed
 - Made `arguments` parameter optional in `ToolCallRequest` interface for better type safety
