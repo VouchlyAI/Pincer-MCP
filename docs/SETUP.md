@@ -69,6 +69,12 @@ Add your real API keys to the encrypted vault:
 # Store Gemini API key
 pincer set gemini_api_key "AIzaSyDpxPq_YOUR_ACTUAL_KEY_HERE"
 
+# Store OpenAI API key
+pincer set openai_api_key "sk-proj-YOUR_OPENAI_KEY_HERE"
+
+# Store OpenWebUI API key
+pincer set openwebui_api_key "sk-YOUR_OPENWEBUI_KEY"
+
 # Store Slack token
 pincer set slack_token "xoxb-12345-YOUR_SLACK_TOKEN"
 
@@ -83,6 +89,10 @@ When storing secrets, use the correct secret name for each tool:
 | Tool Name | Secret Name | Example |
 |-----------|-------------|---------|
 | `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
+| `openai_chat` | `openai_api_key` | `pincer set openai_api_key sk-proj...` |
+| `openai_list_models` | `openai_api_key` | (same as above) |
+| `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
+| `openwebui_list_models` | `openwebui_api_key` | (same as above) |
 | `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
 | `gcloud_create_vm` | `gcloud_credentials` | `pincer set gcloud_credentials {...}` |
 

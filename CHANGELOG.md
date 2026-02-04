@@ -53,6 +53,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Default: `https://openwebui.com` (supports self-hosted instances)
   - Zod validation schemas for message format and parameters
   - Ideal for AI engineers testing local/self-hosted LLMs (Llama, Mistral, Granite, etc.)
+- **OpenAI caller** - GPT model support:
+  - `openai_chat` - Chat completions with GPT models (gpt-4o, gpt-4-turbo, gpt-3.5-turbo, etc.)
+  - `openai_list_models` - List all available OpenAI models
+  - Full message history support with system, user, and assistant roles
+  - Temperature and max_tokens configuration
+  - Response format options for structured outputs
+  - Secure API key management through vault (`openai_api_key`)
 
 ### Changed
 - **Proxy token authentication** now supports 3 sources (priority order):

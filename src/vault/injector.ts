@@ -57,6 +57,8 @@ export class VaultInjector {
             gemini_generate: "gemini_api_key",
             openwebui_chat: "openwebui_api_key",
             openwebui_list_models: "openwebui_api_key",
+            openai_chat: "openai_api_key",
+            openai_list_models: "openai_api_key",
             slack_send_message: "slack_token",
             gcloud_create_vm: "gcloud_credentials",
         };

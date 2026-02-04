@@ -1,6 +1,7 @@
 import { BaseCaller } from "./base.js";
 import { GeminiCaller } from "./gemini.js";
 import { OpenWebUICaller } from "./openwebui.js";
+import { OpenAICaller } from "./openai.js";
 
 export class CallerRegistry {
     private callers = new Map<string, BaseCaller>();
@@ -10,6 +11,8 @@ export class CallerRegistry {
         this.callers.set("gemini_generate", new GeminiCaller());
         this.callers.set("openwebui_chat", new OpenWebUICaller());
         this.callers.set("openwebui_list_models", new OpenWebUICaller());
+        this.callers.set("openai_chat", new OpenAICaller());
+        this.callers.set("openai_list_models", new OpenAICaller());
         // Add more callers here as they're implemented
     }
 
@@ -149,6 +152,67 @@ export class CallerRegistry {
                             description: "Optional: Base URL for OpenWebUI instance (overrides OPENWEBUI_URL env var, default: https://openwebui.com)",
                         },
                     },
+                    required: [],
+                },
+            },
+            // OpenAI tools
+            {
+                name: "openai_chat",
+                description:
+                    "Chat completions using OpenAI API. Supports GPT models including gpt-4o, gpt-4-turbo, gpt-3.5-turbo, and more.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        model: {
+                            type: "string",
+                            description: "Model identifier (e.g., 'gpt-4o', 'gpt-4-turbo', 'gpt-3.5-turbo')",
+                        },
+                        messages: {
+                            type: "array",
+                            description: "Array of message objects with 'role' and 'content'",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    role: {
+                                        type: "string",
+                                        enum: ["system", "user", "assistant"],
+                                        description: "Message role",
+                                    },
+                                    content: {
+                                        type: "string",
+                                        description: "Message content",
+                                    },
+                                },
+                                required: ["role", "content"],
+                            },
+                        },
+                        temperature: {
+                            type: "number",
+                            description:
+                                "Controls randomness (0.0 = deterministic, 2.0 = very random)",
+                            minimum: 0,
+                            maximum: 2,
+                            default: 1.0,
+                        },
+                        max_tokens: {
+                            type: "number",
+                            description: "Maximum tokens in response",
+                        },
+                        response_format: {
+                            type: "object",
+                            description: "Response format specification (e.g., {type: 'json_object'})",
+                        },
+                    },
+                    required: ["model", "messages"],
+                },
+            },
+            {
+                name: "openai_list_models",
+                description:
+                    "List all available models from OpenAI. Use this to discover which models are available before making chat requests.",
+                inputSchema: {
+                    type: "object",
+                    properties: {},
                     required: [],
                 },
             },

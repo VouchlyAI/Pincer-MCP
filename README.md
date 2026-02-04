@@ -46,6 +46,8 @@ sequenceDiagram
 ## 📦 Available Tools
 
 - `gemini_generate`: Secure Google Gemini API calls.
+- `openai_chat`: Chat completions with OpenAI GPT models (gpt-4o, gpt-4-turbo, gpt-3.5-turbo, etc.).
+- `openai_list_models`: List all available OpenAI models.
 - `openwebui_chat`: OpenAI-compatible interface for self-hosted LLMs.
 - `openwebui_list_models`: Discover available models on an OpenWebUI instance.
 - `slack_send_message`: Secure Slack message posting.
@@ -85,6 +87,7 @@ pincer init
 
 # 2. Store your real API keys (encrypted)
 pincer set gemini_api_key "AIzaSyDpxPq..."
+pincer set openai_api_key "sk-proj-..."
 pincer set slack_token "xoxb-12345..."
 
 # 3. Register an agent and generate proxy token
@@ -142,6 +145,8 @@ export PINCER_PROXY_TOKEN="pxr_V1StGXR8_Z5jdHi6B-myT"
 | Tool Name (for authorize) | Secret Name (for set) | Example Command |
 |---------------------------|----------------------|-----------------|
 | `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
+| `openai_chat` | `openai_api_key` | `pincer set openai_api_key sk-proj...` |
+| `openai_list_models` | `openai_api_key` | (same as above) |
 | `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
 | `openwebui_list_models` | `openwebui_api_key` | (same as above) |
 | `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
