@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.0] - 2026-02-04
+
 ### Added
 - Project kickoff with Apache 2.0 license
 - Initial architecture design and implementation plan
@@ -101,3 +103,6 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Memory scrubbing overwrites secrets with zeros after use
 - Fine-grained agent-to-tool authorization mappings
 - Append-only, tamper-evident audit logs
+
+[Unreleased]: https://github.com/VouchlyAI/Pincer-MCP/compare/v0.1.0...HEAD
+[0.1.0]: https://github.com/VouchlyAI/Pincer-MCP/releases/tag/v0.1.0

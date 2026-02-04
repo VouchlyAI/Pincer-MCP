@@ -9,6 +9,9 @@
 [![License](https://img.shields.io/badge/License-Apache_2.0-blue.svg)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-blue)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-green)](https://modelcontextprotocol.io)
+[![NPM Version](https://img.shields.io/npm/v/pincer-mcp)](https://www.npmjs.com/package/pincer-mcp)
+![NPM Downloads](https://img.shields.io/npm/d18m/pincer-mcp?label=NPM%20Downloads)
+[![NPM License](https://img.shields.io/npm/l/pincer-mcp)](LICENSE)
 
 Pincer-MCP is a security-hardened Model Context Protocol (MCP) gateway that eliminates the "Lethal Trifecta" vulnerability in agentic AI systems. By acting as a stateless intermediary, Pincer ensures agents **never see your real API keys**.
 
