@@ -51,7 +51,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `openwebui_list_models` - Fetch available models from OpenWebUI
   - Configurable URL via parameter or `OPENWEBUI_URL` env var
   - Default: `https://openwebui.com` (supports self-hosted instances)
-  - Ideal for AI engineers testing local/self hosted LLMs (Llama, Mistral, Granite, etc.)
+  - Zod validation schemas for message format and parameters
+  - Ideal for AI engineers testing local/self-hosted LLMs (Llama, Mistral, Granite, etc.)
 
 ### Changed
 - **Proxy token authentication** now supports 3 sources (priority order):

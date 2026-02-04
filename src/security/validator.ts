@@ -24,6 +24,31 @@ export class Validator {
                 __pincer_auth__: z.string().optional(),
             })
         );
+
+        // OpenWebUI Schemas
+        this.schemas.set(
+            "openwebui_chat",
+            z.object({
+                model: z.string().min(1),
+                messages: z.array(z.object({
+                    role: z.enum(["system", "user", "assistant"]),
+                    content: z.string()
+                })).min(1),
+                url: z.string().url().optional(),
+                temperature: z.number().min(0).max(2).optional(),
+                max_tokens: z.number().positive().optional(),
+                stream: z.boolean().optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        this.schemas.set(
+            "openwebui_list_models",
+            z.object({
+                url: z.string().url().optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
     }
 
     validate(toolName: string, args: unknown): void {

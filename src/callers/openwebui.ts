@@ -91,7 +91,7 @@ export class OpenWebUICaller extends BaseCaller {
         // 2. Check environment variable
         const envUrl = process.env["OPENWEBUI_URL"];
         if (envUrl && typeof envUrl === "string") {
-            console.log("Using OpenWebUI URL from environment variable: " + envUrl);
+            console.error("Using OpenWebUI URL from environment variable: " + envUrl);
             return envUrl.replace(/\/$/, "");
         }
 
