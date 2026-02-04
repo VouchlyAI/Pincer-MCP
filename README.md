@@ -259,6 +259,7 @@ npm run build
 - **[OpenClaw Integration](docs/OPENCLAW_INTEGRATION.md)** - Integrate Pincer with OpenClaw agents
 - **[Testing Guide](docs/TESTING.md)** - Comprehensive test suite documentation
 - **[Capabilities Reference](docs/CAPABILITIES.md)** - Full API and feature documentation
+- **[Security Policy](SECURITY.md)** - Vulnerability reporting and security best practices
 - **[CHANGELOG](CHANGELOG.md)** - Version history and release notes
 
 
