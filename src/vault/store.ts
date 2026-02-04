@@ -353,6 +353,45 @@ export class VaultStore {
     }
 
     /**
+     * Revoke an agent's access to a specific tool
+     */
+    revokeAgentAccess(agentId: string, toolName: string): void {
+        const stmt = this.db.prepare(`
+      DELETE FROM agent_mappings
+      WHERE agent_id = ? AND tool_name = ?
+    `);
+
+        const result = stmt.run(agentId, toolName);
+
+        if (result.changes === 0) {
+            throw new Error(
+                `Agent '${agentId}' does not have access to tool '${toolName}'`
+            );
+        }
+    }
+
+    /**
+     * Remove an agent completely (delete token and all permissions)
+     */
+    removeAgent(agentId: string): void {
+        // Delete all permissions first
+        const mappingsStmt = this.db.prepare(`
+      DELETE FROM agent_mappings WHERE agent_id = ?
+    `);
+        mappingsStmt.run(agentId);
+
+        // Delete proxy token
+        const tokenStmt = this.db.prepare(`
+      DELETE FROM proxy_tokens WHERE agent_id = ?
+    `);
+        const result = tokenStmt.run(agentId);
+
+        if (result.changes === 0) {
+            throw new Error(`Agent '${agentId}' not found`);
+        }
+    }
+
+    /**
      * Close database connection and scrub master key
      */
     close(): void {

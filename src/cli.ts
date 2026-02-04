@@ -164,6 +164,38 @@ agentCmd
         }
     });
 
+agentCmd
+    .command("revoke <agent-id> <tool-name>")
+    .description("Revoke an agent's access to a specific tool")
+    .action(async (agentId: string, toolName: string) => {
+        const vault = new VaultStore();
+        try {
+            vault.revokeAgentAccess(agentId, toolName);
+            console.log(`✅ Revoked access for '${agentId}' to tool '${toolName}'`);
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+agentCmd
+    .command("remove <agent-id>")
+    .description("Remove an agent and all its permissions")
+    .action(async (agentId: string) => {
+        const vault = new VaultStore();
+        try {
+            vault.removeAgent(agentId);
+            console.log(`✅ Agent '${agentId}' removed (all permissions revoked)`);
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
 // Reset vault
 program
     .command("reset")

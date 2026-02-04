@@ -248,6 +248,9 @@ npm run build
 
 ## 📚 Documentation
 
+- **[Setup Guide](docs/SETUP.md)** - Getting started with Pincer-MCP
+- **[IDE Integration](docs/IDE_INTEGRATION.md)** - Use Pincer with VSCode, Claude Desktop, Cursor, and more
+- **[OpenClaw Integration](docs/OPENCLAW_INTEGRATION.md)** - Integrate Pincer with OpenClaw agents
 - **[Testing Guide](docs/TESTING.md)** - Comprehensive test suite documentation
 - **[Capabilities Reference](docs/CAPABILITIES.md)** - Full API and feature documentation
 - **[CHANGELOG](CHANGELOG.md)** - Version history and release notes
