@@ -60,6 +60,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Temperature and max_tokens configuration
   - Response format options for structured outputs
   - Secure API key management through vault (`openai_api_key`)
+- **OpenAI-compatible caller** - Generic OpenAI-spec API support:
+  - `openai_compatible_chat` - Chat completions with any OpenAI-compatible endpoint
+  - `openai_compatible_list_models` - List models from custom endpoints
+  - Configurable URL via `OPENAI_COMPATIBLE_URL` env var or `url` parameter
+  - Perfect for Azure OpenAI, local Ollama, vLLM servers, or other providers
+  - Reuses standard OpenAI message format and parameters
+  - Secure API key management through vault (`openai_compatible_api_key`)
 
 ### Changed
 - **Proxy token authentication** now supports 3 sources (priority order):

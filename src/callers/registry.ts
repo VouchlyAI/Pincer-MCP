@@ -2,6 +2,7 @@ import { BaseCaller } from "./base.js";
 import { GeminiCaller } from "./gemini.js";
 import { OpenWebUICaller } from "./openwebui.js";
 import { OpenAICaller } from "./openai.js";
+import { OpenAICompatibleCaller } from "./openai-compatible.js";
 
 export class CallerRegistry {
     private callers = new Map<string, BaseCaller>();
@@ -13,6 +14,8 @@ export class CallerRegistry {
         this.callers.set("openwebui_list_models", new OpenWebUICaller());
         this.callers.set("openai_chat", new OpenAICaller());
         this.callers.set("openai_list_models", new OpenAICaller());
+        this.callers.set("openai_compatible_chat", new OpenAICompatibleCaller());
+        this.callers.set("openai_compatible_list_models", new OpenAICompatibleCaller());
         // Add more callers here as they're implemented
     }
 
@@ -213,6 +216,76 @@ export class CallerRegistry {
                 inputSchema: {
                     type: "object",
                     properties: {},
+                    required: [],
+                },
+            },
+            // OpenAI-compatible tools (for Azure OpenAI, local servers, etc.)
+            {
+                name: "openai_compatible_chat",
+                description:
+                    "Chat completions using any OpenAI-compatible API endpoint. Perfect for Azure OpenAI, local Ollama, vLLM servers, or other OpenAI-spec providers. Requires OPENAI_COMPATIBLE_URL env var or 'url' parameter.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        url: {
+                            type: "string",
+                            description: "Optional: Base URL for the OpenAI-compatible endpoint (overrides OPENAI_COMPATIBLE_URL env var). Examples: 'https://your-resource.openai.azure.com' or 'http://localhost:11434/v1'",
+                        },
+                        model: {
+                            type: "string",
+                            description: "Model identifier (deployment name for Azure, model name for others)",
+                        },
+                        messages: {
+                            type: "array",
+                            description: "Array of message objects with 'role' and 'content'",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    role: {
+                                        type: "string",
+                                        enum: ["system", "user", "assistant"],
+                                        description: "Message role",
+                                    },
+                                    content: {
+                                        type: "string",
+                                        description: "Message content",
+                                    },
+                                },
+                                required: ["role", "content"],
+                            },
+                        },
+                        temperature: {
+                            type: "number",
+                            description:
+                                "Controls randomness (0.0 = deterministic, 2.0 = very random)",
+                            minimum: 0,
+                            maximum: 2,
+                            default: 1.0,
+                        },
+                        max_tokens: {
+                            type: "number",
+                            description: "Maximum tokens in response",
+                        },
+                        response_format: {
+                            type: "object",
+                            description: "Response format specification (e.g., {type: 'json_object'})",
+                        },
+                    },
+                    required: ["model", "messages"],
+                },
+            },
+            {
+                name: "openai_compatible_list_models",
+                description:
+                    "List all available models from an OpenAI-compatible endpoint. Use this to discover which models are available. Requires OPENAI_COMPATIBLE_URL env var or 'url' parameter.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        url: {
+                            type: "string",
+                            description: "Optional: Base URL for the OpenAI-compatible endpoint (overrides OPENAI_COMPATIBLE_URL env var)",
+                        },
+                    },
                     required: [],
                 },
             },
