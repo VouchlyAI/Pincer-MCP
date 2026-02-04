@@ -61,17 +61,11 @@ Add to your workspace or user `settings.json`:
 }
 ```
 
-**Using global installation:**
-```jsonc
-{
-  "mcp.servers": {
-    "pincer": {
-      "type": "stdio", 
-      "command": "pincer-server"  // If you created a wrapper script
-    }
-  }
-}
-```
+**Note:** The `env` section is optional. Pincer uses these defaults:
+- Vault: `~/.pincer/vault.db` 
+- Audit log: `~/.pincer/audit.jsonl`
+
+Only set custom paths if you need to override them.
 
 #### Option 2: MCP Extension Configuration
 
@@ -285,6 +279,16 @@ pincer set slack_token "xoxb-..."
 # 4. List keys to verify
 pincer list
 ```
+
+**Tool-to-Secret Name Mappings:**
+
+| Tool Name | Secret Name to Store |
+|-----------|---------------------|
+| `gemini_generate` | `gemini_api_key` |
+| `slack_send_message` | `slack_token` |
+| `gcloud_create_vm` | `gcloud_credentials` |
+
+> **Important:** Use the secret name (right column) with `pincer set`, and the tool name (left column) with `pincer agent authorize`.
 
 ### Per-IDE Agent Setup
 

@@ -76,6 +76,18 @@ pincer set slack_token "xoxb-12345-YOUR_SLACK_TOKEN"
 pincer set gcloud_credentials '{"type":"service_account","project_id":"..."}'
 ```
 
+**Tool-to-Secret Name Mappings:**
+
+When storing secrets, use the correct secret name for each tool:
+
+| Tool Name | Secret Name | Example |
+|-----------|-------------|---------|
+| `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
+| `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
+| `gcloud_create_vm` | `gcloud_credentials` | `pincer set gcloud_credentials {...}` |
+
+> **Why different names?** Tool names (e.g., `gemini_generate`) are what you authorize agents to use. Secret names (e.g., `gemini_api_key`) are what you store in the vault. This allows one secret to power multiple tools or future tool additions.
+
 **With labels (multi-key support):**
 ```bash
 # Store multiple keys for the same tool

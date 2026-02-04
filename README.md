@@ -126,6 +126,18 @@ Give your agent the **proxy token** (not the real API key):
 export PINCER_PROXY_TOKEN="pxr_V1StGXR8_Z5jdHi6B-myT"
 ```
 
+## Tool-to-Secret Name Mappings
+
+**Important:** When using `pincer set`, you must use the correct secret name for each tool:
+
+| Tool Name (for authorize) | Secret Name (for set) | Example Command |
+|---------------------------|----------------------|-----------------|
+| `gemini_generate` | `gemini_api_key` | `pincer set gemini_api_key AIza...` |
+| `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |
+| `gcloud_create_vm` | `gcloud_credentials` | `pincer set gcloud_credentials {...}` |
+
+When you run `pincer agent authorize myagent gemini_generate`, Pincer will inject the `gemini_api_key` secret when that tool is called.
+
 ### Make a Tool Call
 
 Your agent sends requests with the proxy token in the body:
