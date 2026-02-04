@@ -43,6 +43,15 @@ sequenceDiagram
     Pincer->>Pincer: Scrub key from memory
     Pincer-->>Agent: Response (no credentials)
 ```
+## 📦 Available Tools
+
+- `gemini_generate`: Secure Google Gemini API calls.
+- `openwebui_chat`: OpenAI-compatible interface for self-hosted LLMs.
+- `openwebui_list_models`: Discover available models on an OpenWebUI instance.
+- `slack_send_message`: Secure Slack message posting.
+- `gcloud_create_vm`: Enterprise-grade Google Cloud resource management.
+
+*(More callers coming soon!)*
 
 ## 🚀 Quick Start
 
@@ -197,34 +206,20 @@ Scrubber: Overwrite key in memory with zeros
 Audit: Log to tamper-evident chain
 ```
 
-## 🔐 Security Features
+## 🔐 Security & Compliance
 
-- ✅ **OS Keychain Storage**: Master key protected by OS-level encryption
-- ✅ **AES-256-GCM**: Authenticated encryption for all secrets
-- ✅ **Proxy Token Isolation**: Agents never see real credentials
-- ✅ **JIT Decryption**: Keys only exist in volatile memory during calls
-- ✅ **Memory Scrubbing**: Secrets overwritten after use
-- ✅ **Fine-Grained Authorization**: Per-agent, per-tool access control
-- ✅ **Forensic Audit Log**: Append-only, SHA-256 chain-hashed JSONL
-- ✅ **Stdio Compatible**: Works with standard MCP transports
+Pincer is built for enterprise-grade security:
 
-## 📦 Available Tools
+- **Hardware-Backed Cryptography**: Master encryption keys never leave the OS-native keychain.
+- **Proxy Token Isolation**: Agents only handle ephemeral `pxr_` tokens; they never touch real credentials.
+- **JIT Decryption**: Secrets are decrypted only for the duration of the API call.
+- **Zero-Footprint Memory**: Sensitive data is scrubbed (zeroed out) from memory immediately after use.
+- **Fine-Grained Authorization**: Strict per-agent, per-tool access control policies.
+- **Tamper-Evident Audit Log**: Append-only tool call history with SHA-256 chain-hashing.
+- **Hardened Execution**: Schema validation on all inputs and protected environment execution.
+- **Stdio Compatible**: Fully compatible with the standard Model Context Protocol transport.
 
-- `gemini_generate`: Google Gemini API calls
-- `slack_send_message`: Slack message posting
-- `gcloud_create_vm`: Google Cloud resource management
 
-*(More callers coming soon - PRs welcome!)*
-
-## 🛠️ Vault CLI Reference
-
-| Command | Description | Example |
-|---------|-------------|---------|
-| `vault:init` | Initialize master key in OS keychain | `npm run vault:init` |
-| `vault:set` | Store encrypted API secret | `npm run vault:set gemini_api_key "AIza..."` |
-| `vault:add-agent` | Register agent & generate proxy token | `npm run vault:add-agent openclaw` |
-| `vault:authorize` | Grant agent access to a tool | `npm run vault:authorize openclaw gemini_generate` |
-| `vault:reset` | Delete master key (destructive!) | `npm run vault:reset` |
 
 ## 🔍 Audit Logs
 
@@ -269,16 +264,6 @@ npm run build
 - **[Capabilities Reference](docs/CAPABILITIES.md)** - Full API and feature documentation
 - **[CHANGELOG](CHANGELOG.md)** - Version history and release notes
 
-## 📋 Requirements
-
-### Cybersecurity Compliance
-
-- ✅ No secrets in environment variables or config files
-- ✅ Non-root execution (all processes run as unprivileged user)
-- ✅ No `PATH`, `LD_PRELOAD`, or env variable overrides accepted
-- ✅ Schema validation on all inputs (prevents injection attacks)
-- ✅ Constant-time comparisons for token validation
-- ✅ Exponential backoff on retries (rate limit protection)
 
 ## 🤝 Contributing
 
@@ -288,16 +273,9 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 Apache 2.0 - See [LICENSE](LICENSE) for details.
 
-**Why Apache 2.0?**
-- Explicit patent grant protects enterprise users
-- Permissive for commercial use
-- Industry-standard for security tools
-
-## 🙏 Acknowledgments
-
-- [Model Context Protocol](https://modelcontextprotocol.io) - The foundation of agentic tooling
-- [keytar](https://github.com/atom/node-keytar) - Cross-platform keychain access
-- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) - Fast, reliable SQLite
+- [Model Context Protocol](https://modelcontextprotocol.io) - The standard for AI tool integration.
+- [keytar](https://github.com/atom/node-keytar) - Secure cross-platform keychain access.
+- [better-sqlite3](https://github.com/WiseLibs/better-sqlite3) - High-performance local persistence.
 
 ---
 
