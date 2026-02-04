@@ -74,6 +74,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - Support for Claude 3.5 Sonnet, Claude 3 Opus, and Haiku models
   - Temperature, top_p, and top_k controls
   - Secure API key management through vault (`claude_api_key`)
+- **OpenRouter caller** - Unified multi-provider API support:
+  - `openrouter_chat` - Access 100+ models from multiple providers
+  - `openrouter_list_models` - List all available models across providers
+  - Single API for OpenAI, Anthropic, Google, Meta, Mistral, and more
+  - Provider-prefixed model names (e.g., `openai/gpt-4`, `anthropic/claude-3-5-sonnet`)
+  - Standard OpenAI message format
+  - Secure API key management through vault (`openrouter_api_key`)
 
 ### Changed
 - **Proxy token authentication** now supports 3 sources (priority order):

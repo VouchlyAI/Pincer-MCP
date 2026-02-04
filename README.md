@@ -51,6 +51,8 @@ sequenceDiagram
 - `openai_compatible_chat`: Chat completions with **any** OpenAI-compatible API (Azure OpenAI, Ollama, vLLM, etc.).
 - `openai_compatible_list_models`: List models from custom OpenAI-compatible endpoints.
 - `claude_chat`: Chat completions with Anthropic Claude models (Claude 3.5 Sonnet, Opus, Haiku).
+- `openrouter_chat`: Unified API access to 100+ models from multiple providers (OpenAI, Anthropic, Google, Meta, etc.).
+- `openrouter_list_models`: List all available models across OpenRouter providers.
 - `openwebui_chat`: OpenAI-compatible interface for self-hosted LLMs.
 - `openwebui_list_models`: Discover available models on an OpenWebUI instance.
 - `slack_send_message`: Secure Slack message posting.
@@ -153,6 +155,8 @@ export PINCER_PROXY_TOKEN="pxr_V1StGXR8_Z5jdHi6B-myT"
 | `openai_compatible_chat` | `openai_compatible_api_key` | `pincer set openai_compatible_api_key YOUR_KEY` |
 | `openai_compatible_list_models` | `openai_compatible_api_key` | (same as above) |
 | `claude_chat` | `claude_api_key` | `pincer set claude_api_key sk-ant-api03...` |
+| `openrouter_chat` | `openrouter_api_key` | `pincer set openrouter_api_key sk-or-v1...` |
+| `openrouter_list_models` | `openrouter_api_key` | (same as above) |
 | `openwebui_chat` | `openwebui_api_key` | `pincer set openwebui_api_key sk-...` |
 | `openwebui_list_models` | `openwebui_api_key` | (same as above) |
 | `slack_send_message` | `slack_token` | `pincer set slack_token xoxb-...` |

@@ -4,6 +4,7 @@ import { OpenWebUICaller } from "./openwebui.js";
 import { OpenAICaller } from "./openai.js";
 import { OpenAICompatibleCaller } from "./openai-compatible.js";
 import { ClaudeCaller } from "./claude.js";
+import { OpenRouterCaller } from "./openrouter.js";
 
 export class CallerRegistry {
     private callers = new Map<string, BaseCaller>();
@@ -18,6 +19,8 @@ export class CallerRegistry {
         this.callers.set("openai_compatible_chat", new OpenAICompatibleCaller());
         this.callers.set("openai_compatible_list_models", new OpenAICompatibleCaller());
         this.callers.set("claude_chat", new ClaudeCaller());
+        this.callers.set("openrouter_chat", new OpenRouterCaller());
+        this.callers.set("openrouter_list_models", new OpenRouterCaller());
         // Add more callers here as they're implemented
     }
 
@@ -351,6 +354,69 @@ export class CallerRegistry {
                         },
                     },
                     required: ["model", "messages", "max_tokens"],
+                },
+            },
+            // OpenRouter tools (unified multi-provider API)
+            {
+                name: "openrouter_chat",
+                description:
+                    "Chat completions using OpenRouter's unified API. Access 100+ models from multiple providers (OpenAI, Anthropic, Google, Meta, Mistral, etc.) through a single endpoint. Model names are provider-prefixed (e.g., 'openai/gpt-4', 'anthropic/claude-3-5-sonnet').",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        model: {
+                            type: "string",
+                            description: "Provider-prefixed model identifier (e.g., 'openai/gpt-4o', 'anthropic/claude-3-5-sonnet', 'google/gemini-2.0-flash-exp')",
+                        },
+                        messages: {
+                            type: "array",
+                            description: "Array of message objects with 'role' and 'content'",
+                            items: {
+                                type: "object",
+                                properties: {
+                                    role: {
+                                        type: "string",
+                                        enum: ["system", "user", "assistant"],
+                                        description: "Message role",
+                                    },
+                                    content: {
+                                        type: "string",
+                                        description: "Message content",
+                                    },
+                                },
+                                required: ["role", "content"],
+                            },
+                        },
+                        temperature: {
+                            type: "number",
+                            description:
+                                "Controls randomness (0.0 = deterministic, 2.0 = very random)",
+                            minimum: 0,
+                            maximum: 2,
+                            default: 1.0,
+                        },
+                        max_tokens: {
+                            type: "number",
+                            description: "Maximum tokens in response",
+                        },
+                        top_p: {
+                            type: "number",
+                            description: "Nucleus sampling threshold",
+                            minimum: 0,
+                            maximum: 1,
+                        },
+                    },
+                    required: ["model", "messages"],
+                },
+            },
+            {
+                name: "openrouter_list_models",
+                description:
+                    "List all available models from OpenRouter. Returns 100+ models from multiple providers including OpenAI, Anthropic, Google, Meta, and more.",
+                inputSchema: {
+                    type: "object",
+                    properties: {},
+                    required: [],
                 },
             },
             // Placeholder for future tools
