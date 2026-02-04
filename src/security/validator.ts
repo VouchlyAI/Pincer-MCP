@@ -40,6 +40,99 @@ export class Validator {
                 __pincer_auth__: z.string().optional(),
             })
         );
+
+        // OpenAI Schemas
+        this.schemas.set(
+            "openai_chat",
+            z.object({
+                model: z.string().min(1),
+                messages: z.array(z.object({
+                    role: z.enum(["system", "user", "assistant"]),
+                    content: z.string()
+                })).min(1),
+                temperature: z.number().min(0).max(2).optional(),
+                max_tokens: z.number().positive().optional(),
+                response_format: z.object({
+                    type: z.enum(["text", "json_object"])
+                }).optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        this.schemas.set(
+            "openai_list_models",
+            z.object({
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        // OpenAI-compatible Schemas
+        this.schemas.set(
+            "openai_compatible_chat",
+            z.object({
+                url: z.string().url().optional(),
+                model: z.string().min(1),
+                messages: z.array(z.object({
+                    role: z.enum(["system", "user", "assistant"]),
+                    content: z.string()
+                })).min(1),
+                temperature: z.number().min(0).max(2).optional(),
+                max_tokens: z.number().positive().optional(),
+                response_format: z.object({
+                    type: z.enum(["text", "json_object"])
+                }).optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        this.schemas.set(
+            "openai_compatible_list_models",
+            z.object({
+                url: z.string().url().optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        // Claude Schemas
+        this.schemas.set(
+            "claude_chat",
+            z.object({
+                model: z.string().min(1),
+                messages: z.array(z.object({
+                    role: z.enum(["user", "assistant"]),
+                    content: z.string()
+                })).min(1),
+                system: z.string().optional(),
+                max_tokens: z.number().positive(),
+                temperature: z.number().min(0).max(1).optional(),
+                top_p: z.number().min(0).max(1).optional(),
+                top_k: z.number().min(1).optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        // OpenRouter Schemas
+        this.schemas.set(
+            "openrouter_chat",
+            z.object({
+                model: z.string().min(1),
+                messages: z.array(z.object({
+                    role: z.enum(["system", "user", "assistant"]),
+                    content: z.string()
+                })).min(1),
+                temperature: z.number().min(0).max(2).optional(),
+                max_tokens: z.number().positive().optional(),
+                top_p: z.number().min(0).max(1).optional(),
+                __pincer_auth__: z.string().optional(),
+            })
+        );
+
+        this.schemas.set(
+            "openrouter_list_models",
+            z.object({
+                __pincer_auth__: z.string().optional(),
+            })
+        );
     }
 
     validate(toolName: string, args: unknown): void {
