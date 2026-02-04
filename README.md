@@ -246,6 +246,12 @@ npm run dev
 npm run build
 ```
 
+## 📚 Documentation
+
+- **[Testing Guide](docs/TESTING.md)** - Comprehensive test suite documentation
+- **[Capabilities Reference](docs/CAPABILITIES.md)** - Full API and feature documentation
+- **[CHANGELOG](CHANGELOG.md)** - Version history and release notes
+
 ## 📋 Requirements
 
 ### Cybersecurity Compliance
