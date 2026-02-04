@@ -22,9 +22,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - Abstract BaseCaller with retry logic and exponential backoff
 - Gemini API caller implementation
 - Zod schema validation for tool arguments
-- Comprehensive test suite with Vitest (12/12 passing)
+- Comprehensive test suite with Vitest (21/21 passing)
   - Integration tests: MCP server tool listing, authentication flow, validation
   - Unit tests: Gatekeeper proxy token extraction, Validator schema checks
+  - Multi-key tests: Key storage, per-agent assignment, encryption
   - Coverage tracking for security-critical components
 - **Executable CLI binary** - Install globally via npm and use `pincer` command
 - **Multi-key support** - Store multiple API keys per tool with labels (e.g., key1, key2, production)
@@ -40,6 +41,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 - Made `arguments` parameter optional in `ToolCallRequest` interface for better type safety
+- Fixed database column mapping in `VaultStore.getSecret()` for multi-key support (snake_case SQL → camelCase TypeScript)
 - Updated MCP server request handlers to use proper SDK schema imports (`ListToolsRequestSchema`, `CallToolRequestSchema`)
 - Added fallback to empty object when arguments are undefined in validator calls
 

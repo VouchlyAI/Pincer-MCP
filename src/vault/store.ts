@@ -192,7 +192,11 @@ export class VaultStore {
       WHERE tool_name = ? AND key_label = ?
     `);
 
-        const row = stmt.get(toolName, keyLabel) as EncryptedData | undefined;
+        const row = stmt.get(toolName, keyLabel) as {
+            encrypted_value: string;
+            iv: string;
+            auth_tag: string;
+        } | undefined;
 
         if (!row) {
             throw new Error(
@@ -200,7 +204,11 @@ export class VaultStore {
             );
         }
 
-        return await this.decrypt(row);
+        return await this.decrypt({
+            encryptedValue: row.encrypted_value,
+            iv: row.iv,
+            authTag: row.auth_tag,
+        });
     }
 
     /**
