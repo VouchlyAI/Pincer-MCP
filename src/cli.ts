@@ -196,19 +196,79 @@ agentCmd
         }
     });
 
-// Reset vault
+// Reset vault (delete master key)
 program
     .command("reset")
-    .description("Delete master key from OS keychain (destructive!)")
+    .description("Delete master key from OS keychain (keeps vault data)")
     .action(async () => {
         const vault = new VaultStore();
         try {
             await vault.deleteMasterKey();
-            console.log("⚠️  Master key deleted. Run 'pincer init' to create a new one.");
+            console.log("⚠️  Master key deleted from OS keychain.");
+            console.log("   Vault data (secrets, agents) still exists but is unusable.");
+            console.log("   Run 'pincer init' to create a new master key.");
             vault.close();
         } catch (error) {
             console.error(`❌ Error: ${(error as Error).message}`);
             vault.close();
+            process.exit(1);
+        }
+    });
+
+// Clear all vault data (keep master key)
+program
+    .command("clear")
+    .description("Delete all secrets and agents (keeps master key)")
+    .option("-y, --yes", "Skip confirmation prompt")
+    .action(async (options: { yes?: boolean }) => {
+        const vault = new VaultStore();
+        try {
+            if (!options.yes) {
+                console.log("⚠️  WARNING: This will delete ALL secrets and agents from the vault!");
+                console.log("   Master key will be preserved.");
+                console.log("\n   Run with --yes to confirm: pincer clear --yes");
+                vault.close();
+                process.exit(0);
+            }
+
+            vault.deleteAllSecrets();
+            console.log("✅ All secrets and agents deleted.");
+            console.log("   Master key preserved. Vault is now empty.");
+            console.log("   Run 'pincer set' to add new secrets.");
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+// Nuclear option: Delete everything
+program
+    .command("nuke")
+    .description("🔥 Delete EVERYTHING: master key, vault database, all data")
+    .option("-y, --yes", "Skip confirmation prompt")
+    .action(async (options: { yes?: boolean }) => {
+        const vault = new VaultStore();
+        try {
+            if (!options.yes) {
+                console.log("🔥 DANGER: This will PERMANENTLY delete:");
+                console.log("   • Master key from OS keychain");
+                console.log("   • All encrypted secrets");
+                console.log("   • All agents and proxy tokens");
+                console.log("   • Vault database file");
+                console.log("\n   This action CANNOT be undone!");
+                console.log("\n   Run with --yes to confirm: pincer nuke --yes");
+                vault.close();
+                process.exit(0);
+            }
+
+            await vault.nukeVault();
+            console.log("💥 Vault completely destroyed.");
+            console.log("   All data deleted from OS keychain and filesystem.");
+            console.log("   Run 'pincer init' to start fresh.");
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
             process.exit(1);
         }
     });

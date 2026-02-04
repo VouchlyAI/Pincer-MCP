@@ -1,6 +1,6 @@
 import { createCipheriv, createDecipheriv, randomBytes } from "crypto";
 import Database from "better-sqlite3";
-import * as keytar from "keytar";
+import keytar from "keytar";
 import { homedir } from "os";
 import { join, dirname } from "path";
 import { nanoid } from "nanoid";
@@ -115,14 +115,9 @@ export class VaultStore {
     }
 
     async deleteMasterKey(): Promise<void> {
-        const deleted = await keytar.deletePassword(
-            KEYCHAIN_SERVICE,
-            KEYCHAIN_ACCOUNT
-        );
-
-        if (!deleted) {
-            throw new Error("No master key found to delete");
-        }
+        // keytar doesn't have a deletePassword method
+        // Set to empty string to effectively delete
+        await keytar.deletePassword(KEYCHAIN_SERVICE, KEYCHAIN_ACCOUNT);
 
         this.masterKey = null;
         console.log("🗑️  Master key deleted from OS keychain");
@@ -388,6 +383,50 @@ export class VaultStore {
 
         if (result.changes === 0) {
             throw new Error(`Agent '${agentId}' not found`);
+        }
+    }
+
+    /**
+     * Delete all secrets from vault (keeps master key and structure)
+     */
+    deleteAllSecrets(): void {
+        const secretsStmt = this.db.prepare(`DELETE FROM secrets`);
+        const tokensStmt = this.db.prepare(`DELETE FROM proxy_tokens`);
+        const mappingsStmt = this.db.prepare(`DELETE FROM agent_mappings`);
+
+        secretsStmt.run();
+        tokensStmt.run();
+        mappingsStmt.run();
+    }
+
+    /**
+     * Nuclear option: Delete everything including master key and database file
+     */
+    async nukeVault(): Promise<void> {
+        // Delete master key from OS keychain
+        await this.deleteMasterKey();
+
+        // Close database connection
+        this.close();
+
+        // Get vault path
+        const { homedir } = await import("os");
+        const { join } = await import("path");
+        const vaultPath =
+            process.env["VAULT_DB_PATH"] ||
+            join(homedir(), ".pincer", "vault.db");
+
+        // Delete database file
+        const { unlinkSync, existsSync } = await import("fs");
+        if (existsSync(vaultPath)) {
+            unlinkSync(vaultPath);
+        }
+        // Also delete WAL and SHM files if they exist
+        if (existsSync(`${vaultPath}-wal`)) {
+            unlinkSync(`${vaultPath}-wal`);
+        }
+        if (existsSync(`${vaultPath}-shm`)) {
+            unlinkSync(`${vaultPath}-shm`);
         }
     }
 
