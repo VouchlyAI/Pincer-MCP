@@ -1,0 +1,29 @@
+# Source code
+src/
+tsconfig.json
+
+# Tests
+tests/
+vitest.config.ts
+
+# Documentation
+docs/
+CHANGELOG.md
+
+# Media
+mascot.png
+
+# Development config
+.env.example
+.gitignore
+.prettierrc
+.eslintrc.json
+
+# Logs & Vault (Local)
+logs/
+audit.jsonl
+vault.db
+.pincer/
+
+# Build artifacts (handled by package.json 'files')
+# node_modules/ is ignored by npm by default

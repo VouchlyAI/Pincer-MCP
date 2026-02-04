@@ -8,6 +8,9 @@
   "bin": {
     "pincer": "./dist/cli.js"
   },
+  "files": [
+    "dist"
+  ],
   "engines": {
     "node": ">=18.0.0"
   },
@@ -22,6 +25,7 @@
     "vault:add-agent": "tsx src/vault/cli.ts add-agent",
     "vault:authorize": "tsx src/vault/cli.ts authorize",
     "vault:reset": "tsx src/vault/cli.ts reset",
+    "prepublishOnly": "npm run build",
     "lint": "eslint src --ext .ts",
     "format": "prettier --write \"src/**/*.ts\""
   },
