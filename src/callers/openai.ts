@@ -131,26 +131,19 @@ export class OpenAICaller extends BaseCaller {
             throw new Error("Invalid response format from OpenAI models API");
         }
 
-        // Filter and format models list (show only GPT models for clarity)
-        const gptModels = data.data.filter((model) =>
-            model.id.includes("gpt")
-        );
-
-        const modelsList = gptModels
+        // Format models list (show all available models)
+        const modelsList = data.data
             .map((model) => {
                 const ownedBy = model.owned_by ? ` (${model.owned_by})` : "";
                 return `- ${model.id}${ownedBy}`;
             })
             .join("\n");
 
-        const allModelsCount = data.data.length;
-        const gptCount = gptModels.length;
-
         return {
             content: [
                 {
                     type: "text",
-                    text: `Available GPT models (${gptCount} of ${allModelsCount} total):\n\n${modelsList}`,
+                    text: `Available OpenAI models (${data.data.length}):\n\n${modelsList}`,
                 },
             ],
         };

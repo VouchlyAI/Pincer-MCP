@@ -9,7 +9,7 @@ export class Validator {
             "gemini_generate",
             z.object({
                 prompt: z.string().min(1).max(10000),
-                model: z.enum(["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"]),
+                model: z.string().min(1),
                 temperature: z.number().min(0).max(2).optional(),
                 // __pincer_auth__ is optional (will be removed by Gatekeeper)
                 __pincer_auth__: z.string().optional(),

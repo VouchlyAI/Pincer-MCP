@@ -1,6 +1,6 @@
 {
   "name": "pincer-mcp",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "The secure grip for your agent's secrets - A security-hardened MCP gateway with proxy token authentication",
   "type": "module",
   "main": "dist/index.js",
@@ -17,7 +17,7 @@
     "node": ">=18.0.0"
   },
   "scripts": {
-    "build": "tsc",
+    "build": "node scripts/sync-version.js && tsc",
     "dev": "tsx watch src/index.ts",
     "start": "node dist/index.js",
     "test": "vitest",

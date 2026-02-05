@@ -49,8 +49,7 @@ export class CallerRegistry {
                         },
                         model: {
                             type: "string",
-                            enum: ["gemini-2.0-flash", "gemini-1.5-pro", "gemini-1.5-flash"],
-                            description: "The Gemini model to use",
+                            description: "The Gemini model to use (e.g., 'gemini-2.0-flash', 'gemini-1.5-pro')",
                             default: "gemini-2.0-flash",
                         },
                         temperature: {

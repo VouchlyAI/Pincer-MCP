@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.5] - 2026-02-05
+
+### Changed
+- **Flexible Model Selection**: Removed hardcoded model name restrictions across AI callers to ensure forward compatibility with future models.
+  - `gemini_generate` now accepts any valid model ID as a string.
+  - `openai_list_models` now displays the full set of available models without filtering.
+- **Version Synchronization System**: Implemented a pre-build script (`scripts/sync-version.js`) that automatically synchronizes the version number from `package.json` to `server.json`, `src/index.ts`, and `src/cli.ts`. This eliminates runtime file reads and ensures consistent versioning across the codebase.
+
 ## [0.1.4] - 2026-02-05
 
 ### Added
