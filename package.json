@@ -5,7 +5,7 @@
   "type": "module",
   "main": "dist/index.js",
   "types": "dist/index.d.ts",
-  "mcpName": "io.github.vouchlyai/pincer",
+  "mcpName": "io.github.VouchlyAI/pincer",
   "bin": {
     "pincer": "./dist/cli.js"
   },
