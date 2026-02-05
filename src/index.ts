@@ -5,11 +5,19 @@ import {
     CallToolRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import { Pincer } from "./pincer.js";
+import { readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+    readFileSync(join(__dirname, "../package.json"), "utf8")
+);
 
 const server = new Server(
     {
         name: "pincer-mcp",
-        version: "0.1.0",
+        version: pkg.version,
     },
     {
         capabilities: {

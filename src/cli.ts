@@ -2,13 +2,21 @@
 
 import { VaultStore } from "./vault/store.js";
 import { Command } from "commander";
+import { readFileSync } from "fs";
+import { join, dirname } from "path";
+import { fileURLToPath } from "url";
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const pkg = JSON.parse(
+    readFileSync(join(__dirname, "../package.json"), "utf8")
+);
 
 const program = new Command();
 
 program
     .name("pincer")
     .description("Pincer-MCP Vault Management CLI")
-    .version("0.1.0");
+    .version(pkg.version);
 
 // Initialize vault
 program

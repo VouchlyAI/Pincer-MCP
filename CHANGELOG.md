@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.3] - 2026-02-05
+
+### Fixed
+- **Schema Validation**: Shortened description in `server.json` to comply with the 100-character maximum length enforced by the MCP schema.
+
+### Changed
+- **Versioning**: Updated MCP server and CLI to dynamically read version from `package.json` at runtime, eliminating hardcoded version strings.
+- **Packaging**: Bundled `server.json` in the NPM package to support direct integration with MCP registries.
+
+### Added
+- **Configuration**: Added `AUDIT_LOG_PATH` to the `server.json` environment variables schema to improve discoverability in MCP registries.
+
 ## [0.1.2] - 2026-02-05
 
 ### Changed
