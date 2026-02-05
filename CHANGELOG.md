@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.4] - 2026-02-05
+
+### Added
+- **Character Count & Token Estimation in Audit Logs**: Every tool call now tracks usage metrics:
+  - `input_chars`: Character count of JSON-stringified request arguments
+  - `output_chars`: Character count of response text content
+  - `estimated_input_tokens`: Token estimate using 4:1 character-to-token ratio
+  - `estimated_output_tokens`: Token estimate using 4:1 character-to-token ratio
+  - Provides consistent cost tracking across all AI providers without relying on provider-specific APIs
+
 ## [0.1.3] - 2026-02-05
 
 ### Fixed

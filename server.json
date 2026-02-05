@@ -1,17 +1,17 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
-  "name": "io.github.vouchlyai/pincer",
+  "name": "io.github.VouchlyAI/pincer",
   "description": "Secure grip for your agent's secrets - security-hardened MCP gateway with proxy token architecture",
   "repository": {
     "url": "https://github.com/VouchlyAI/Pincer-MCP",
     "source": "github"
   },
-  "version": "0.1.3",
+  "version": "0.1.4",
   "packages": [
     {
       "registryType": "npm",
       "identifier": "pincer-mcp",
-      "version": "0.1.3",
+      "version": "0.1.4",
       "transport": {
         "type": "stdio"
       },

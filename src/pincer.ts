@@ -48,12 +48,27 @@ export class Pincer {
             // Step 6: Scrub secrets from volatile memory
             this.injector.scrubMemory(enrichedRequest);
 
-            // Step 7: Log to audit trail
+            // Step 7: Count characters for audit logging
+            const inputChars = JSON.stringify(request.params.arguments || {}).length;
+            const outputChars = result.content
+                .map(c => c.text || "")
+                .join("")
+                .length;
+
+            // Estimate tokens (average ~4 characters per token)
+            const estimatedInputTokens = Math.ceil(inputChars / 4);
+            const estimatedOutputTokens = Math.ceil(outputChars / 4);
+
+            // Step 8: Log to audit trail
             await this.audit.log({
                 agentId,
                 tool: request.params.name,
                 duration: Date.now() - startTime,
                 status: "success",
+                input_chars: inputChars,
+                output_chars: outputChars,
+                estimated_input_tokens: estimatedInputTokens,
+                estimated_output_tokens: estimatedOutputTokens,
             });
 
             console.error(`[${agentId}] ✅ Success (${Date.now() - startTime}ms)`);

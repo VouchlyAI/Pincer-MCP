@@ -87,4 +87,8 @@ interface AuditEvent {
     duration: number;
     status: "success" | "error";
     error?: string;
+    input_chars?: number;
+    output_chars?: number;
+    estimated_input_tokens?: number;
+    estimated_output_tokens?: number;
 }

@@ -219,7 +219,7 @@ Pincer is built for enterprise-grade security:
 
 ## 🔍 Audit Logs
 
-Every tool call is logged to `~/.pincer/audit.jsonl` with both UTC and Local timestamps:
+Every tool call is logged to `~/.pincer/audit.jsonl` with both UTC and Local timestamps, plus character counts and estimated token usage:
 
 ```json
 {
@@ -227,11 +227,18 @@ Every tool call is logged to `~/.pincer/audit.jsonl` with both UTC and Local tim
   "tool": "gemini_generate",
   "duration": 234,
   "status": "success",
+  "input_chars": 156,
+  "output_chars": 423,
+  "estimated_input_tokens": 39,
+  "estimated_output_tokens": 106,
   "timestamp_utc": "2026-02-05T08:32:00.000Z",
   "timestamp_local": "2/5/2026, 2:02:45 PM",
   "chainHash": "a1b2c3d4e5f6g7h8",
   "prevHash": "0000000000000000"
 }
+```
+
+**Token Estimation**: Pincer automatically estimates token usage using a 4:1 character-to-token ratio (~4 characters per token average). This provides consistent cost tracking across all AI providers without relying on provider-specific APIs.
 ```
 
 Chain hashes provide tamper detection - any modification breaks the SHA-256 chain.

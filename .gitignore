@@ -144,3 +144,5 @@ vite.config.ts.timestamp-*
 *.db-shm
 *.db-wal
 audit.jsonl
+.mcpregistry_github_token
+.mcpregistry_registry_token
