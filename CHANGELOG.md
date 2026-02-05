@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.2] - 2026-02-05
+
+### Changed
+- **Dependency Update**: Bumped `@modelcontextprotocol/sdk` to v1.26.0 for improved protocol stability.
+- **Security Hardening**: Updated `express-rate-limit` sub-dependency to include `ip-address` for better network validation.
+- **Maintenance**: Synced `package-lock.json` with latest upstream changes.
+
 ## [0.1.1] - 2026-02-05
 
 ### Added
