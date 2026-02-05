@@ -246,24 +246,26 @@ const apiKey = await vault.getSecret(toolName, keyLabel);
 
 ### 7. Tamper-Evident Audit Logging
 
-**Feature:** Append-only, chain-hashed audit log
+**Feature:** Append-only, chain-hashed audit log with dual timestamping
 
 **Log Format:** JSONL (JSON Lines)
 
 **Log Entry:**
 ```json
 {
-  "timestamp": "2026-02-04T12:00:00Z",
   "agentId": "clawdbot",
   "tool": "gemini_generate",
   "duration": 234,
   "status": "success",
+  "timestamp_utc": "2026-02-05T08:32:00.000Z",
+  "timestamp_local": "2/5/2026, 2:02:45 PM",
   "chainHash": "a1b2c3d4e5f6g7h8",
   "prevHash": "0000000000000000"
 }
 ```
 
 **Chain Hashing:**
+The audit log uses a SHA-256 chain hash that includes the **timestamps**, agent ID, and tool metadata. This ensures that any attempt to modify the time-of-record is immediately detectable.
 ```
 Entry 1: hash(entry1 + "0000...")
 Entry 2: hash(entry2 + hash1)

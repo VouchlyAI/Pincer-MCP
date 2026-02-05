@@ -22,13 +22,24 @@ export class AuditLogger {
     }
 
     async log(event: AuditEvent): Promise<void> {
-        // Create chain hash (links to previous event)
-        const eventJson = JSON.stringify(event);
-        const chainHash = this.computeChainHash(eventJson);
+        // Generate timestamps
+        const now = new Date();
+        const timestamp_utc = now.toISOString();
+        const timestamp_local = now.toLocaleString();
+
+        // Prepare full log entry
+        const logEntryBase = {
+            ...event,
+            timestamp_utc,
+            timestamp_local,
+        };
+
+        // Create chain hash (links to previous event, including timestamps)
+        const chainHash = this.computeChainHash(JSON.stringify(logEntryBase));
 
         // Append to log with chain hash
         const logEntry = {
-            ...event,
+            ...logEntryBase,
             chainHash,
             prevHash: this.lastHash,
         };
@@ -69,7 +80,8 @@ export class AuditLogger {
 }
 
 interface AuditEvent {
-    timestamp: string;
+    timestamp_utc?: string;
+    timestamp_local?: string;
     agentId: string;
     tool: string;
     duration: number;

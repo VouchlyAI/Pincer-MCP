@@ -50,7 +50,6 @@ export class Pincer {
 
             // Step 7: Log to audit trail
             await this.audit.log({
-                timestamp: new Date().toISOString(),
                 agentId,
                 tool: request.params.name,
                 duration: Date.now() - startTime,
@@ -65,7 +64,6 @@ export class Pincer {
 
             // Log failures with error details
             await this.audit.log({
-                timestamp: new Date().toISOString(),
                 agentId,
                 tool: request.params?.name || "unknown",
                 duration: Date.now() - startTime,

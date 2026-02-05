@@ -7,6 +7,18 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-02-05
+
+### Added
+- **Dual Timestamping in Audit Logs**: Forensic audit logs now record both local and UTC timestamps for every event.
+- **Enhanced Log Integrity**: Timestamps are now included in the SHA-256 chain hash, making the temporal record tamper-evident.
+
+### Changed
+- Centralized timestamp generation in `AuditLogger` to ensure consistency and protocol integrity.
+
+### Fixed
+- Fixed redundant timestamp generation in the Pincer orchestrator.
+
 ## [0.1.0] - 2026-02-04
 
 ### Added

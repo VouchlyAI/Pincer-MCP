@@ -132,12 +132,12 @@ pincer agent authorize prod-bot gemini_generate --key production
 - Append-only (no deletions or modifications)
 
 **Logged Information:**
-- Timestamp
+- Timestamps (UTC and Local)
 - Agent ID
 - Tool name
 - Duration
 - Status (success/failure)
-- Chain hash
+- Chain hash (includes timestamps in hash)
 
 **Location:** `~/.pincer/audit.jsonl`
 

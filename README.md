@@ -220,15 +220,16 @@ Pincer is built for enterprise-grade security:
 
 ## 🔍 Audit Logs
 
-Every tool call is logged to `~/.pincer/audit.jsonl`:
+Every tool call is logged to `~/.pincer/audit.jsonl` with both UTC and Local timestamps:
 
 ```json
 {
-  "timestamp": "2026-02-03T23:00:00Z",
   "agentId": "openclaw",
   "tool": "gemini_generate",
   "duration": 234,
   "status": "success",
+  "timestamp_utc": "2026-02-05T08:32:00.000Z",
+  "timestamp_local": "2/5/2026, 2:02:45 PM",
   "chainHash": "a1b2c3d4e5f6g7h8",
   "prevHash": "0000000000000000"
 }
