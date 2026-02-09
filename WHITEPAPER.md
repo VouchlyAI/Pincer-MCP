@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/main/assets/pincer-logo.png" alt="Pincer-MCP Logo" width="200"/>
+  <img src="https://raw.githubusercontent.com/VouchlyAI/Pincer-MCP/main/mascot.png" alt="Pincer-MCP - The Secure Grip for Your Agent's Secrets" width="400"/>
 </p>
 
 <h1 align="center">The Credential Leakage Manifesto</h1>
