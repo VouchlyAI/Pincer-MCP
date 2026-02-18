@@ -91,4 +91,7 @@ interface AuditEvent {
     output_chars?: number;
     estimated_input_tokens?: number;
     estimated_output_tokens?: number;
+    // GPG Signing Proxy fields
+    signing_key_id?: string;
+    signing_operation?: "sign" | "decrypt";
 }

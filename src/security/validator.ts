@@ -133,6 +133,32 @@ export class Validator {
                 __pincer_auth__: z.string().optional(),
             })
         );
+
+        // GPG Signing Proxy Schemas
+        this.schemas.set(
+            "gpg_sign_data",
+            z.object({
+                data: z.string().optional(),
+                file_path: z.string().optional(),
+                detached: z.boolean().optional(),
+                __pincer_auth__: z.string().optional(),
+            }).refine(
+                (args) => args.data !== undefined || args.file_path !== undefined,
+                { message: "Either 'data' or 'file_path' must be provided" }
+            )
+        );
+
+        this.schemas.set(
+            "gpg_decrypt",
+            z.object({
+                data: z.string().optional(),
+                file_path: z.string().optional(),
+                __pincer_auth__: z.string().optional(),
+            }).refine(
+                (args) => args.data !== undefined || args.file_path !== undefined,
+                { message: "Either 'data' or 'file_path' must be provided" }
+            )
+        );
     }
 
     validate(toolName: string, args: unknown): void {

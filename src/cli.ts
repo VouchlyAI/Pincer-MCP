@@ -2,6 +2,8 @@
 
 import { VaultStore } from "./vault/store.js";
 import { Command } from "commander";
+import * as openpgp from "openpgp";
+import { readFileSync } from "fs";
 
 // Version is auto-synced during build via scripts/sync-version.js
 const VERSION = "0.1.5";
@@ -275,5 +277,232 @@ program
             process.exit(1);
         }
     });
+
+// GPG Key Management
+const keyCmd = program.command("key").description("Manage GPG/PGP signing keys for keyless agent execution");
+
+keyCmd
+    .command("generate")
+    .description("Generate a new GPG/PGP keypair and store the private key in the vault")
+    .requiredOption("-n, --name <name>", "Identity name (e.g., 'Release Signing Key')")
+    .option("-e, --email <email>", "Email address for the key identity")
+    .option("--type <type>", "Key type: 'ecc' (default, Curve25519) or 'rsa'", "ecc")
+    .action(async (options: { name: string; email?: string; type?: string }) => {
+        const vault = new VaultStore();
+        try {
+            const userIDs = [{ name: options.name, email: options.email || "" }];
+            const passphrase = generatePassphrase();
+
+            const keyType = options.type === "rsa" ? "rsa" : "curve25519";
+
+            console.log("🔑 Generating GPG keypair...");
+            const { privateKey, publicKey } = await openpgp.generateKey({
+                type: keyType as "curve25519" | "rsa",
+                userIDs,
+                passphrase,
+            });
+
+            // Extract fingerprint from the generated key
+            const parsedKey = await openpgp.readPrivateKey({ armoredKey: privateKey as string });
+            const fingerprint = parsedKey.getFingerprint().toUpperCase();
+            const keyId = fingerprint.slice(-16); // Last 16 chars as key ID
+
+            // Store the key bundle in vault
+            const keyBundle = JSON.stringify({
+                armoredPrivateKey: privateKey,
+                passphrase,
+                fingerprint,
+                userID: `${options.name}${options.email ? ` <${options.email}>` : ""}`,
+            });
+
+            await vault.setSecret("gpg_signing_key", keyBundle, keyId);
+
+            console.log(`\n✅ GPG keypair generated and stored in vault`);
+            console.log(`   Key ID:      ${keyId}`);
+            console.log(`   Fingerprint: ${fingerprint}`);
+            console.log(`   Type:        ${keyType.toUpperCase()}`);
+            console.log(`   Identity:    ${options.name}${options.email ? ` <${options.email}>` : ""}`);
+            console.log(`\n📋 Public Key (distribute this freely):\n`);
+            console.log(publicKey);
+            console.log(`\n🔗 Next: Authorize an agent to use this key:`);
+            console.log(`   pincer agent authorize <agent-id> gpg_sign_data --key ${keyId}`);
+
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+keyCmd
+    .command("import <file>")
+    .description("Import an existing armored PGP private key file into the vault")
+    .option("-p, --passphrase <passphrase>", "Passphrase for the private key (if encrypted)")
+    .action(async (file: string, options: { passphrase?: string }) => {
+        const vault = new VaultStore();
+        try {
+            const armoredKey = readFileSync(file, "utf8");
+
+            // Parse and validate the key
+            const parsedKey = await openpgp.readPrivateKey({ armoredKey });
+            const fingerprint = parsedKey.getFingerprint().toUpperCase();
+            const keyId = fingerprint.slice(-16);
+
+            // If key is encrypted and passphrase provided, verify it works
+            let passphrase = options.passphrase || "";
+            if (!parsedKey.isDecrypted()) {
+                if (!passphrase) {
+                    throw new Error("Private key is encrypted. Provide passphrase with --passphrase");
+                }
+                // Verify passphrase works
+                await openpgp.decryptKey({ privateKey: parsedKey, passphrase });
+            } else {
+                // Key is unencrypted — encrypt it with a generated passphrase for vault storage
+                passphrase = generatePassphrase();
+                // Re-read and encrypt with passphrase
+                const reEncrypted = await openpgp.encryptKey({
+                    privateKey: parsedKey,
+                    passphrase,
+                });
+                // Update armoredKey to the encrypted version
+                const keyBundle = JSON.stringify({
+                    armoredPrivateKey: reEncrypted.armor(),
+                    passphrase,
+                    fingerprint,
+                    userID: parsedKey.getUserIDs().join(", "),
+                });
+
+                await vault.setSecret("gpg_signing_key", keyBundle, keyId);
+
+                console.log(`✅ GPG key imported and stored in vault`);
+                console.log(`   Key ID:      ${keyId}`);
+                console.log(`   Fingerprint: ${fingerprint}`);
+                console.log(`   Identity:    ${parsedKey.getUserIDs().join(", ")}`);
+                console.log(`\n🔗 Next: Authorize an agent to use this key:`);
+                console.log(`   pincer agent authorize <agent-id> gpg_sign_data --key ${keyId}`);
+
+                vault.close();
+                return;
+            }
+
+            // Store with original passphrase
+            const keyBundle = JSON.stringify({
+                armoredPrivateKey: armoredKey,
+                passphrase,
+                fingerprint,
+                userID: parsedKey.getUserIDs().join(", "),
+            });
+
+            await vault.setSecret("gpg_signing_key", keyBundle, keyId);
+
+            console.log(`✅ GPG key imported and stored in vault`);
+            console.log(`   Key ID:      ${keyId}`);
+            console.log(`   Fingerprint: ${fingerprint}`);
+            console.log(`   Identity:    ${parsedKey.getUserIDs().join(", ")}`);
+            console.log(`\n🔗 Next: Authorize an agent to use this key:`);
+            console.log(`   pincer agent authorize <agent-id> gpg_sign_data --key ${keyId}`);
+
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+keyCmd
+    .command("list")
+    .description("List all GPG keys stored in the vault")
+    .action(async () => {
+        const vault = new VaultStore();
+        try {
+            const secrets = vault.listSecrets();
+            const gpgKeys = secrets.filter(s => s.toolName === "gpg_signing_key");
+
+            if (gpgKeys.length === 0 || !gpgKeys[0] || gpgKeys[0].labels.length === 0) {
+                console.log("📭 No GPG keys stored.");
+                console.log("   Run: pincer key generate --name 'My Key'");
+            } else {
+                console.log("\n🔑 GPG Signing Keys:\n");
+                for (const label of gpgKeys[0].labels) {
+                    try {
+                        const raw = await vault.getSecret("gpg_signing_key", label);
+                        const bundle = JSON.parse(raw);
+                        console.log(`  ${label}:`);
+                        console.log(`    Fingerprint: ${bundle.fingerprint}`);
+                        console.log(`    Identity:    ${bundle.userID}`);
+                    } catch {
+                        console.log(`  ${label}: (unable to decrypt)`);
+                    }
+                }
+            }
+
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+keyCmd
+    .command("export <key-id>")
+    .description("Export the public key for a stored GPG key (safe to share)")
+    .action(async (keyId: string) => {
+        const vault = new VaultStore();
+        try {
+            const raw = await vault.getSecret("gpg_signing_key", keyId);
+            const bundle = JSON.parse(raw);
+
+            // Read private key and extract public key
+            const privateKey = await openpgp.readPrivateKey({ armoredKey: bundle.armoredPrivateKey });
+            const publicKey = privateKey.toPublic().armor();
+
+            console.log(publicKey);
+
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+keyCmd
+    .command("delete <key-id>")
+    .description("Delete a GPG key from the vault")
+    .option("-y, --yes", "Skip confirmation prompt")
+    .action(async (keyId: string, options: { yes?: boolean }) => {
+        const vault = new VaultStore();
+        try {
+            if (!options.yes) {
+                console.log(`⚠️  WARNING: This will permanently delete GPG key '${keyId}' from the vault.`);
+                console.log(`   Any agents authorized with this key will lose signing capability.`);
+                console.log(`\n   Run with --yes to confirm: pincer key delete ${keyId} --yes`);
+                vault.close();
+                process.exit(0);
+            }
+
+            // Overwrite with empty to effectively delete (vault doesn't have per-label delete)
+            // We set an empty value which will fail on use
+            await vault.setSecret("gpg_signing_key", "{}", keyId);
+            console.log(`✅ GPG key '${keyId}' deleted from vault.`);
+
+            vault.close();
+        } catch (error) {
+            console.error(`❌ Error: ${(error as Error).message}`);
+            vault.close();
+            process.exit(1);
+        }
+    });
+
+/**
+ * Generate a cryptographically secure passphrase for PGP key protection.
+ */
+function generatePassphrase(): string {
+    const { randomBytes } = require("crypto");
+    return randomBytes(32).toString("base64url");
+}
 
 program.parse();

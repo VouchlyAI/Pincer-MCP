@@ -230,6 +230,49 @@ This means even if an agent is compromised via prompt injection, it cannot sudde
 
 ---
 
+### V. Keyless Execution: Asymmetric Key Signing Proxy
+
+Pincer-MCP introduces **Keyless Execution** — a paradigm where AI agents can perform cryptographic signing and decryption operations *without ever possessing the private key*.
+
+#### The Problem
+
+As AI agents increasingly participate in software supply chains (signing releases, commits, and artifacts), they become attractive targets for key theft. A compromised agent with access to a signing key can:
+
+- **Sign malicious code** as the legitimate maintainer
+- **Forge commits** to inject backdoors into repositories
+- **Exfiltrate private keys** to external attackers via prompt injection
+
+#### The Solution
+
+Pincer acts as a *signing proxy*. The agent submits data to be signed, and Pincer:
+
+1. Resolves the agent's proxy token to the authorized GPG key
+2. Retrieves the encrypted private key from the vault
+3. Performs the signing operation locally using OpenPGP.js (RFC 9580)
+4. Returns **only the detached signature** — the agent never sees the private key
+5. Scrubs the key material from memory immediately after use
+
+```
+Agent → "sign this release tarball"  →  Pincer  →  [Vault: decrypt key]
+                                                        ↓
+Agent ← PGP detached signature      ←  Pincer  ←  [crypto.sign()]
+                                                        ↓
+                                                   [scrub key from RAM]
+```
+
+#### Key Lifecycle
+
+Keys are managed through the Pincer CLI, never through the agent:
+
+- `pincer key generate` — Create a new ECC (Curve25519) or RSA keypair
+- `pincer key import` — Import existing PGP keys into the vault
+- `pincer key export` — Export public keys for distribution
+- `pincer agent authorize` — Bind specific keys to specific agents
+
+Each key is identified by a short Key ID (last 16 hex chars of the fingerprint) and stored as an encrypted JSON bundle in the vault, reusing the existing AES-256-GCM secrets infrastructure.
+
+---
+
 ## 5. Security Posture Comparison
 
 | Security Feature | `.env` / Env Vars | Cloud Secrets Manager (e.g., AWS) | **Pincer-MCP** |
@@ -242,6 +285,7 @@ This means even if an agent is compromised via prompt injection, it cannot sudde
 | **JIT decryption** | ❌ No | ❌ No (secret fetched and held) | ✅ **Yes** |
 | **Memory scrubbing** | ❌ No | ❌ No | ✅ **Yes** |
 | **Zero agent-side changes** | ✅ Yes | ❌ No (requires SDK integration) | ✅ **Yes** |
+| **Keyless signing proxy** | ❌ No | ❌ No | ✅ **Yes (GPG/PGP)** |
 
 ### Why Cloud Secrets Managers Don't Solve This
 
@@ -334,5 +378,5 @@ npx pincer-mcp
 ---
 
 <p align="center">
-  <em>© 2024-2026 VouchlyAI. Released under the MIT License.</em>
+  <em>© 2024-2026 Premanand Patel. Released under the Business Source License 1.1 (BSL 1.1). Converts to Apache 2.0 on 2028-04-01.</em>
 </p>

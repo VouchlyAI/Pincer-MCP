@@ -5,6 +5,7 @@ import { OpenAICaller } from "./openai.js";
 import { OpenAICompatibleCaller } from "./openai-compatible.js";
 import { ClaudeCaller } from "./claude.js";
 import { OpenRouterCaller } from "./openrouter.js";
+import { SigningCaller } from "./signing.js";
 
 export class CallerRegistry {
     private callers = new Map<string, BaseCaller>();
@@ -21,7 +22,9 @@ export class CallerRegistry {
         this.callers.set("claude_chat", new ClaudeCaller());
         this.callers.set("openrouter_chat", new OpenRouterCaller());
         this.callers.set("openrouter_list_models", new OpenRouterCaller());
-        // Add more callers here as they're implemented
+        // GPG Signing Proxy — Keyless Execution for agents
+        this.callers.set("gpg_sign_data", new SigningCaller());
+        this.callers.set("gpg_decrypt", new SigningCaller());
     }
 
     getCaller(toolName: string): BaseCaller {
@@ -415,6 +418,50 @@ export class CallerRegistry {
                 inputSchema: {
                     type: "object",
                     properties: {},
+                    required: [],
+                },
+            },
+            // GPG Signing Proxy — Keyless Execution
+            {
+                name: "gpg_sign_data",
+                description:
+                    "Sign data or a file using a GPG/PGP private key stored in Pincer's vault. The agent never sees the private key — only the detached PGP signature is returned. Supports both inline data strings and file paths. Perfect for signing commits, releases, artifacts, or arbitrary data without exposing signing keys to the agent.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        data: {
+                            type: "string",
+                            description: "The data to sign as a string. Either 'data' or 'file_path' must be provided.",
+                        },
+                        file_path: {
+                            type: "string",
+                            description: "Absolute path to a file to sign. Either 'data' or 'file_path' must be provided.",
+                        },
+                        detached: {
+                            type: "boolean",
+                            description: "If true (default), returns a detached PGP signature. If false, returns a clearsigned message with inline signature.",
+                            default: true,
+                        },
+                    },
+                    required: [],
+                },
+            },
+            {
+                name: "gpg_decrypt",
+                description:
+                    "Decrypt PGP-encrypted data or files using a private key stored in Pincer's vault. The agent sends the ciphertext, Pincer decrypts with the vault-stored private key, and returns the plaintext. The agent never sees the private key.",
+                inputSchema: {
+                    type: "object",
+                    properties: {
+                        data: {
+                            type: "string",
+                            description: "Armored PGP-encrypted message to decrypt. Either 'data' or 'file_path' must be provided.",
+                        },
+                        file_path: {
+                            type: "string",
+                            description: "Absolute path to a PGP-encrypted file to decrypt. Either 'data' or 'file_path' must be provided.",
+                        },
+                    },
                     required: [],
                 },
             },

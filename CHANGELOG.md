@@ -7,6 +7,21 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+- **GPG/PGP Signing Proxy (Keyless Execution)**: Agents can sign data or files using GPG private keys stored in Pincer's vault without ever seeing the key material. Uses OpenPGP.js (RFC 9580).
+  - `gpg_sign_data`: Sign inline data or files, returns detached PGP signatures
+  - `gpg_decrypt`: Decrypt PGP-encrypted data using vault-stored private keys
+  - `pincer key generate`: Generate new ECC (Curve25519) or RSA keypairs
+  - `pincer key import`: Import existing PGP private keys into the vault
+  - `pincer key list`: List all stored GPG keys
+  - `pincer key export`: Export public keys for distribution
+  - `pincer key delete`: Remove keys from the vault
+  - Keys are bound to agents via `pincer agent authorize <agent> gpg_sign_data --key <key-id>`
+  - Signing operations logged in audit trail with `signing_key_id` and `signing_operation` fields
+
+### Changed
+- **License**: Changed from Apache 2.0 to Business Source License 1.1 (BSL 1.1). Converts to Apache 2.0 on 2028-04-01.
+
 ## [0.1.5] - 2026-02-05
 
 ### Changed

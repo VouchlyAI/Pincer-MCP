@@ -64,6 +64,9 @@ export class VaultInjector {
             claude_chat: "claude_api_key",
             openrouter_chat: "openrouter_api_key",
             openrouter_list_models: "openrouter_api_key",
+            // GPG Signing Proxy — maps to GPG key bundle in vault
+            gpg_sign_data: "gpg_signing_key",
+            gpg_decrypt: "gpg_signing_key",
         };
 
         return mapping[toolName] || toolName;

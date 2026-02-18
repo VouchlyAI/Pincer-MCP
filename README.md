@@ -6,7 +6,7 @@
     </picture>
 </p>
 
-[![License](https://img.shields.io/badge/License-Apache_2.0-445566?style=flat&logo=apache)](LICENSE)
+[![License](https://img.shields.io/badge/License-BSL_1.1-445566?style=flat)](LICENSE)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.0+-3178C6?style=flat&logo=typescript)](https://www.typescriptlang.org/)
 [![MCP](https://img.shields.io/badge/MCP-Compatible-FF5F00?style=flat&logo=probot)](https://modelcontextprotocol.io)
 [![NPM Version](https://img.shields.io/npm/v/pincer-mcp?style=flat&logo=npm&color=CB3837)](https://www.npmjs.com/package/pincer-mcp)
@@ -56,6 +56,27 @@ sequenceDiagram
 - `openrouter_list_models`: List all available models across OpenRouter providers.
 - `openwebui_chat`: OpenAI-compatible interface for self-hosted LLMs.
 - `openwebui_list_models`: Discover available models on an OpenWebUI instance.
+- `gpg_sign_data`: Sign data or files using a GPG/PGP private key stored in Pincer's vault. *(Keyless Execution — agent never sees the key)*
+- `gpg_decrypt`: Decrypt PGP-encrypted data using a vault-stored private key.
+
+### 🔑 GPG Key Management
+
+```bash
+# Generate a new GPG keypair (private key stored in vault)
+pincer key generate --name "Release Signing" --email dev@example.com
+
+# Import an existing PGP private key
+pincer key import ./my-key.asc --passphrase "my-passphrase"
+
+# List all stored GPG keys
+pincer key list
+
+# Export public key (safe to share)
+pincer key export <key-id>
+
+# Authorize an agent for signing
+pincer agent authorize mybot gpg_sign_data --key <key-id>
+```
 
 *(More callers coming soon!)*
 
@@ -277,7 +298,7 @@ Contributions are welcome! Please see [CONTRIBUTING.md](CONTRIBUTING.md) for gui
 
 ## 📄 License
 
-Apache 2.0 - See [LICENSE](LICENSE) for details.
+BSL 1.1 (Business Source License) — See [LICENSE](LICENSE) for details. Converts to Apache 2.0 on 2028-04-01.
 
 - [Model Context Protocol](https://modelcontextprotocol.io) - The standard for AI tool integration.
 - [keytar](https://github.com/atom/node-keytar) - Secure cross-platform keychain access.
