@@ -18,6 +18,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
   - `pincer key delete`: Remove keys from the vault
   - Keys are bound to agents via `pincer agent authorize <agent> gpg_sign_data --key <key-id>`
   - Signing operations logged in audit trail with `signing_key_id` and `signing_operation` fields
+- **Comprehensive GPG Signing Test Suite**: Added 20+ unit and integration tests covering detached signatures, clearsigned messages, cryptographic verification, decryption, and error handling for bad passphrases and malformed keys.
 
 ### Changed
 - **License**: Changed from Apache 2.0 to Business Source License 1.1 (BSL 1.1). Converts to Apache 2.0 on 2028-04-01.
